@@ -20,38 +20,40 @@ import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 import java.util.List;
 
 public abstract class AutoBaseClass extends LinearOpMode {
-    //region Servo Variables Definitions
+    // region Servo Variables Definitions
     protected Servo intakeRotate;
     protected Servo dump;
     protected Servo plane;
     protected Servo planeLock;
     protected Servo planeRotate;
-    protected CRServo dumpLocker;
-    //endregion
+    private Servo frontClaw;
+    private Servo backClaw;
+    private CRServo intakeStage2;
+    // endregion
 
-    //region Motors Variables Definitions
+    // region Motors Variables Definitions
     protected DcMotor leftSlide;
     protected DcMotor rightSlide;
     protected DcMotor intake;
-    //endregion
+    // endregion
 
-    //region Camera Variables Definitions
+    // region Camera Variables Definitions
     protected TfodProcessor tfod;
     protected String whereIsTeamElement = "left";
     protected static final boolean USE_WEBCAM = true;
     protected static final String TFOD_MODEL_ASSET = "teamElement.tflite";
-    protected static final String[] LABELS = {"blue", "red"};
+    protected static final String[] LABELS = { "blue", "red" };
     protected VisionPortal visionPortal;
-    //endregion
+    // endregion
 
-    //region Trajectories
-    protected int multipler = 1;
+    // region Trajectories
+    protected int multiplier = 1;
     protected MarkerCallback intakeUp;
     protected MarkerCallback slideUp;
     protected Pose2d intPose;
     protected Pose2d dropOffPose;
     protected double angleAdjust = 0;
-    
+
     protected SampleMecanumDrive drive;
     protected TrajectorySequence trajectoryCloseBeam;
     protected TrajectorySequence trajectoryMiddleBeam;
@@ -59,20 +61,22 @@ public abstract class AutoBaseClass extends LinearOpMode {
     protected TrajectorySequence trajectoryGoToPile;
     protected TrajectorySequence trajectoryDropOffPixels;
 
-    protected TrajectorySequence trajectoryback;
+    protected TrajectorySequence trajectoryBack;
 
-    //endregion
+    // endregion
     protected void getHardware() {
-        //region Servo Hardware
+        // region Servo Hardware
         intakeRotate = hardwareMap.servo.get("intakerotate");
         dump = hardwareMap.servo.get("dump");
-        dumpLocker = hardwareMap.get(CRServo.class, "controt");
+        backClaw = hardwareMap.servo.get("backclaw");
+        frontClaw = hardwareMap.servo.get("frontclaw");
+        intakeStage2 = hardwareMap.get(CRServo.class, "intakestage2");
         plane = hardwareMap.servo.get("planelock");
         planeRotate = hardwareMap.servo.get("planerotate");
         planeLock = hardwareMap.servo.get("plane");
-        //endregion
+        // endregion
 
-        //region Motor Hardware
+        // region Motor Hardware
         rightSlide = hardwareMap.get(DcMotor.class, "rightslide");
         leftSlide = hardwareMap.get(DcMotor.class, "leftslide");
         intake = hardwareMap.get(DcMotor.class, "intake");
@@ -81,14 +85,14 @@ public abstract class AutoBaseClass extends LinearOpMode {
         leftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         leftSlide.setDirection(DcMotorSimple.Direction.REVERSE);
-        //endregion
+        // endregion
 
-        //region Camera Setup
+        // region Camera Setup
         initTfod();
-        //endregion
+        // endregion
     }
 
-    //creates camera recognition
+    // creates camera recognition
     protected void initTfod() {
         tfod = new TfodProcessor.Builder().setModelAssetName(TFOD_MODEL_ASSET)
                 .setModelLabels(LABELS)
@@ -145,25 +149,27 @@ public abstract class AutoBaseClass extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        intakeUp = ()->{
-            intakeRotate.setPosition(1);
+        intakeUp = () -> {
+            intakeRotate.setPosition(Constants.intakeUp);
         };
-        slideUp = ()->{
-            moveSlides(1400,1);
-            dump.setPosition(1);
+        slideUp = () -> {
+            moveSlides(1400, 1);
+            dump.setPosition(Constants.dumpUp);
         };
         getHardware();
 
         setupTrajectories();
         drive.setPoseEstimate(intPose);
         sleep(6000);
-        telemetry.addData("PosX",intPose.getX());
-        telemetry.addData("PosY",intPose.getY());
-        telemetry.addData("you good fam","");
+        frontClaw.setPosition(Constants.frontClawClosed);
+        backClaw.setPosition(Constants.backClawClosed);
+        telemetry.addData("PosX", intPose.getX());
+        telemetry.addData("PosY", intPose.getY());
+        telemetry.addData("you good fam", "");
         telemetry.update();
         waitForStart();
         if (opModeIsActive()) {
-            intakeRotate.setPosition(.53);
+            intakeRotate.setPosition(Constants.intakePickupStack1);
             readTeamElement();
             sleep(500);
             TrajectorySequence first;
@@ -175,23 +181,25 @@ public abstract class AutoBaseClass extends LinearOpMode {
                 first = trajectoryFarBeam;
             }
             drive.followTrajectorySequence(first);
-            dumpLocker.setPower(-.25);
-            sleep(800);
-            drive.followTrajectory(drive.trajectoryBuilder(first.end()).splineToConstantHeading(dropOffPose.vec(),Math.toRadians(180)).build());
-            dumpLocker.setPower(0);
-            dump.setPosition(.14);
+            frontClaw.setPosition(Constants.frontClawOpen);
+            backClaw.setPosition(Constants.backClawOpen);
+            sleep(100);
+            drive.followTrajectory(drive.trajectoryBuilder(first.end())
+                    .splineToConstantHeading(dropOffPose.vec(), Math.toRadians(180)).build());
+
+            dump.setPosition(Constants.dumpDown);
             sleep(500);
             moveSlides(0, 1);
-//            drive.followTrajectorySequence(trajectoryGoToPile);
-//            //do pickup stuff
-//            intakeRotate.setPosition(.66);
-//            sleep(500);
-//            intake.setPower(1);
-//            dumpLocker.setPower(1);
-//            sleep(2000);
-//            intake.setPower(0);
-//            dumpLocker.setPower(0);
-//            drive.followTrajectorySequence(trajectoryDropOffPixels);
+            // drive.followTrajectorySequence(trajectoryGoToPile);
+            // //do pickup stuff
+            // intakeRotate.setPosition(.66);
+            // sleep(500);
+            // intake.setPower(1);
+            // dumpLocker.setPower(1);
+            // sleep(2000);
+            // intake.setPower(0);
+            // dumpLocker.setPower(0);
+            // drive.followTrajectorySequence(trajectoryDropOffPixels);
         }
     }
 
@@ -207,27 +215,5 @@ public abstract class AutoBaseClass extends LinearOpMode {
     }
 
     protected abstract void setupTrajectories();
-//    {
-//        intPose = new Pose2d(12, 61, Math.toRadians(90));
-//        dropOffPose = new Pose2d(12, 61, Math.toRadians(0));
-//
-//        drive = new SampleMecanumDrive(hardwareMap);
-//
-//        trajectoryCloseBeam = drive.trajectorySequenceBuilder(intPose)
-//                .lineTo(new Vector2d(-38.1, 50 * multipler))
-//                .build();
-//        trajectoryMiddleBeam = drive.trajectorySequenceBuilder(intPose)
-//                .lineTo(new Vector2d(-38.1, 50 * multipler))
-//                .build();
-//        trajectoryFarBeam = drive.trajectorySequenceBuilder(intPose)
-//                .lineTo(new Vector2d(-38.1, 50 * multipler))
-//                .build();
-//        trajectoryGoToPile = drive.trajectorySequenceBuilder(dropOffPose)
-//                .lineTo(new Vector2d(-38.1, 50 * multipler))
-//                .build();
-//        trajectoryDropOffPixels = drive.trajectorySequenceBuilder(trajectoryGoToPile.end())
-//                .lineTo(new Vector2d(-38.1, 50 * multipler))
-//                .build();
-//    }
 
 }

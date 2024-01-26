@@ -5,9 +5,11 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+
 @Autonomous(name = "AutoV2CloseBlue", group = "2023-2024")
-public class AutoClose extends AutoBaseClass{
+public class AutoClose extends AutoBaseClass {
     protected double multiplier = 1;
+
     @Override
     protected void returnLocation(double position) {
         if (position > 300) {
@@ -21,6 +23,7 @@ public class AutoClose extends AutoBaseClass{
             telemetry.addData("WE ARE Close from the beams I HOPE BECAUSE", "THIS IS A GUESS BECAUSE WE CAN'T SEE IT");
         }
     }
+
     @Override
     public void runOpMode() {
         super.runOpMode();
@@ -34,34 +37,34 @@ public class AutoClose extends AutoBaseClass{
         drive = new SampleMecanumDrive(hardwareMap);
 
         trajectoryCloseBeam = drive.trajectorySequenceBuilder(intPose)
-                .lineTo(new Vector2d(10.2, 55*multipler))
-                .lineTo(new Vector2d(25, 45*multipler))
+                .lineTo(new Vector2d(10.2, 55 * multiplier))
+                .lineTo(new Vector2d(25, 45 * multiplier))
                 .addDisplacementMarker(intakeUp)
-                .splineToLinearHeading(new Pose2d(32, 30*multipler, Math.toRadians(0)), Math.toRadians(180))
+                .splineToLinearHeading(new Pose2d(32, 30 * multiplier, Math.toRadians(0)), Math.toRadians(180))
                 .addDisplacementMarker(slideUp)
-                .splineToConstantHeading(new Vector2d(51, 41*multipler), 0)
+                .splineToConstantHeading(new Vector2d(51, 41 * multiplier), 0)
                 .build();
         trajectoryMiddleBeam = drive.trajectorySequenceBuilder(intPose)
-                .lineTo(new Vector2d(10.2, 34*multipler))
+                .lineTo(new Vector2d(10.2, 34 * multiplier))
                 .addDisplacementMarker(intakeUp)
-                .lineTo(new Vector2d(10.2, 40*multipler))
+                .lineTo(new Vector2d(10.2, 40 * multiplier))
                 .addDisplacementMarker(slideUp)
-                .splineToLinearHeading(new Pose2d(51, 34.5*multipler, 0), 0)
-                //.lineTo(new Vector2d(51, 34.5*multipler))
+                .splineToLinearHeading(new Pose2d(51, 34.5 * multiplier, 0), 0)
+                // .lineTo(new Vector2d(51, 34.5*multiplier))
                 .build();
         trajectoryFarBeam = drive.trajectorySequenceBuilder(intPose)
-                .lineTo(new Vector2d(10.2, 55*multipler))
-                .lineTo(new Vector2d(20, 45*multipler))
-                .splineToLinearHeading(new Pose2d(10, 30*multipler, Math.toRadians(0)), Math.toRadians(180))
+                .lineTo(new Vector2d(10.2, 55 * multiplier))
+                .lineTo(new Vector2d(20, 45 * multiplier))
+                .splineToLinearHeading(new Pose2d(10, 30 * multiplier, Math.toRadians(0)), Math.toRadians(180))
                 .addDisplacementMarker(intakeUp)
                 .addDisplacementMarker(slideUp)
-                .splineToConstantHeading(new Vector2d(51, 28*multipler), 0)
+                .splineToConstantHeading(new Vector2d(51, 28 * multiplier), 0)
                 .build();
         trajectoryGoToPile = drive.trajectorySequenceBuilder(dropOffPose)
-                .lineTo(new Vector2d(-39, 50 * multipler))
+                .lineTo(new Vector2d(-39, 50 * multiplier))
                 .build();
         trajectoryDropOffPixels = drive.trajectorySequenceBuilder(trajectoryGoToPile.end())
-                .lineTo(new Vector2d(-40, 50 * multipler))
+                .lineTo(new Vector2d(-40, 50 * multiplier))
                 .build();
     }
 }

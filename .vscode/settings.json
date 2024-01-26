@@ -1,0 +1,33 @@
+{
+    "cSpell.words": [
+        "backclaw",
+        "backleft",
+        "backright",
+        "centerstage",
+        "dpad",
+        "endregion",
+        "firstinspires",
+        "frontclaw",
+        "frontleft",
+        "frontright",
+        "gamepad",
+        "intakerotate",
+        "intakestage",
+        "leftslide",
+        "meep",
+        "meepmeep",
+        "planelock",
+        "planerotate",
+        "rightslide",
+        "teamcode",
+        "teleop",
+        "tflite"
+    ],
+    "runTerminalCommand.commands": [
+        {
+            "command": "adb connect 192.168.43.1:5555",
+            "name": "Connect ADB",
+            "auto": true
+        }
+    ]
+}
