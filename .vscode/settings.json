@@ -29,5 +29,6 @@
             "name": "Connect ADB",
             "auto": true
         }
-    ]
+    ],
+    "java.configuration.updateBuildConfiguration": "interactive"
 }

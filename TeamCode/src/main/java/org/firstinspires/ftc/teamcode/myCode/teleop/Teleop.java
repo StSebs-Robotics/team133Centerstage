@@ -1,5 +1,4 @@
-package org.firstinspires.ftc.teamcode.myCode;
-
+package org.firstinspires.ftc.teamcode.myCode.teleop;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
@@ -15,14 +14,14 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.myCode.utilities.Constants;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
-
 @TeleOp(name = "Teleop2.0")
 public class Teleop extends LinearOpMode {
-    //region Hardware Variables
+    // region Hardware Variables
     private Servo intakeRotate;
     protected SampleMecanumDrive drive;
 
@@ -52,18 +51,16 @@ public class Teleop extends LinearOpMode {
     Gamepad previousGamepad1 = new Gamepad();
     Gamepad previousGamepad2 = new Gamepad();
 
-    //endregion
+    // endregion
 
-
-    private int[] slidePosition = {0};
-    private boolean[] isSlideLocked = {false};
+    private int[] slidePosition = { 0 };
+    private boolean[] isSlideLocked = { false };
     private int intakePower = 0;
     private double dumpPos = 0;
-
+    private boolean clawFrontOpen = true;
+    private boolean clawBackOpen = true;
 
     private void moveSlides(int distance, double velocity) {
-
-
         leftSlide.setTargetPosition(-distance);
         rightsSlide.setTargetPosition(distance);
 
@@ -72,7 +69,6 @@ public class Teleop extends LinearOpMode {
 
         rightsSlide.setPower(velocity);
         leftSlide.setPower(velocity);
-
 
     }
 
@@ -92,12 +88,13 @@ public class Teleop extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        //region Hardware Initialization
+        // region Hardware Initialization
 
         imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters myIMUparameters;
 
-        myIMUparameters = new IMU.Parameters(new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.UP, RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
+        myIMUparameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+                RevHubOrientationOnRobot.LogoFacingDirection.UP, RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
 
         // Initialize IMU using Parameters
         imu.initialize(myIMUparameters);
@@ -110,13 +107,10 @@ public class Teleop extends LinearOpMode {
         drive = new SampleMecanumDrive(hardwareMap);
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-
         rightsSlide = hardwareMap.get(DcMotor.class, "rightslide");
         leftSlide = hardwareMap.get(DcMotor.class, "leftslide");
 
-
         intake = hardwareMap.get(DcMotor.class, "intake");
-
 
         intakeRotate = hardwareMap.servo.get("intakerotate");
         dump = hardwareMap.servo.get("dump");
@@ -125,18 +119,20 @@ public class Teleop extends LinearOpMode {
         frontClaw = hardwareMap.servo.get("frontclaw");
         intakeStage2 = hardwareMap.get(CRServo.class, "intakestage2");
 
-//        plane = hardwareMap.servo.get("planelock");
-//        planeRotate = hardwareMap.servo.get("planerotate");
-//        planeLock = hardwareMap.servo.get("plane");
+        // plane = hardwareMap.servo.get("planelock");
+        // planeRotate = hardwareMap.servo.get("planerotate");
+        // planeLock = hardwareMap.servo.get("plane");
 
         rightsSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        //endregion
+        // endregion
 
         dump.setPosition(Constants.dumpDown);
         backClaw.setPosition(Constants.backClawOpen);
         frontClaw.setPosition(Constants.frontClawOpen);
-        //StorePlane();
+        clawBackOpen = true;
+        clawFrontOpen = true;
+        // StorePlane();
         waitForStart();
         if (opModeIsActive()) {
             while (opModeIsActive()) {
@@ -147,16 +143,20 @@ public class Teleop extends LinearOpMode {
                 currentGamepad1.copy(gamepad1);
                 currentGamepad2.copy(gamepad2);
 
-                //region Movement Controls
+                // region Movement Controls
                 Pose2d poseEstimate = drive.getPoseEstimate();
 
                 // Create a vector from the gamepad x/y inputs
                 // Then, rotate that vector by the inverse of that heading
                 YawPitchRollAngles robotOrientation;
                 robotOrientation = imu.getRobotYawPitchRollAngles();
-                Vector2d input = new Vector2d(-currentGamepad1.left_stick_x * yMultiplier, currentGamepad1.left_stick_y * yMultiplier).rotated(-robotOrientation.getYaw(AngleUnit.RADIANS));
+                Vector2d input = new Vector2d(-currentGamepad1.left_stick_x * yMultiplier,
+                        currentGamepad1.left_stick_y * yMultiplier)
+                        .rotated(-robotOrientation.getYaw(AngleUnit.RADIANS));
                 if (currentGamepad1.left_bumper) {
-                    input = new Vector2d(-currentGamepad1.left_stick_x * yMultiplier/4, currentGamepad1.left_stick_y * yMultiplier/4).rotated(-robotOrientation.getYaw(AngleUnit.RADIANS));
+                    input = new Vector2d(-currentGamepad1.left_stick_x * yMultiplier / 3,
+                            currentGamepad1.left_stick_y * yMultiplier / 3)
+                            .rotated(-robotOrientation.getYaw(AngleUnit.RADIANS));
                 }
                 // Pass in the rotated input + right stick value for rotation
                 // Rotation is not part of the rotated input thus must be passed in separately
@@ -171,68 +171,67 @@ public class Teleop extends LinearOpMode {
                     }
                 }
 
-
                 // Update everything. Odometry. Etc.
                 drive.update();
-                //endregion
+                // endregion
 
-                //region CurrentGamepad1
+                // region CurrentGamepad1
 
-                //Rotates intake to bottom position
+                // Rotates intake to bottom position
                 if (currentGamepad1.dpad_right) {
-                    //used to be function intake 1
+                    // used to be function intake 1
                     intakeRotate.setPosition(Constants.intakePickupStack1);
                 }
-                //Rotates intake up
+                // Rotates intake up
                 if (currentGamepad1.share) {
                     intakeRotate.setPosition(Constants.intakeUp);
                 }
-                //Resets the position {Home Button}
+                // Resets the position {Home Button}
                 if (currentGamepad1.ps) {
                     imu.resetYaw();
                     drive.setPoseEstimate(new Pose2d(0, 0, 0));
                     currentGamepad1.rumble(200);
                 }
 
-
-
                 if (currentGamepad1.triangle) {
                     dump.setPosition(dump.getPosition() + .001);
                     dumpPos = dump.getPosition();
                 }
-
 
                 if (currentGamepad1.square) {
                     dump.setPosition(dump.getPosition() - .001);
                     dumpPos = dump.getPosition();
                 }
 
-                //endregion
+                // endregion
 
-                //region CurrentGamepad2
+                // region CurrentGamepad2
 
-                //Checks if the intake is locked from going down to prevent conflict
+                // Checks if the intake is locked from going down to prevent conflict
                 if (!isSlideLocked[0]) {
-                    //Move Slide Up
+                    // Move Slide Up
                     if (currentGamepad2.right_trigger > 0) {
+                        clawFrontOpen = false;
+                        clawBackOpen = false;
                         backClaw.setPosition(Constants.backClawClosed);
                         frontClaw.setPosition(Constants.frontClawClosed);
                         slidePosition[0] += 20 * currentGamepad2.right_trigger;
                     }
 
-                    //Move Slide Down
+                    // Move Slide Down
                     if (currentGamepad2.left_trigger > 0 && slidePosition[0] > -2300) {
                         slidePosition[0] -= 20 * currentGamepad2.left_trigger;
                     }
 
-                    //Slides Up
+                    // Slides Up
                     if (currentGamepad2.triangle && !previousGamepad2.triangle) {
 
                         backClaw.setPosition(Constants.backClawClosed);
                         frontClaw.setPosition(Constants.frontClawClosed);
+                        intakeRotate.setPosition(Constants.intakeUp);
                         isSlideLocked[0] = true;
                         intakePower = 0;
-                        //Does an asynchronous wait
+                        // Does an asynchronous wait
                         new Timer().schedule(new TimerTask() {
                             @Override
                             public void run() {
@@ -242,14 +241,39 @@ public class Teleop extends LinearOpMode {
                             }
                         }, 400L);
                     }
+                    if (currentGamepad2.left_bumper && !previousGamepad2.left_bumper && slidePosition[0] > 0) {
+                        if (clawBackOpen) {
+                            backClaw.setPosition(Constants.backClawClosed);
+                            clawBackOpen = false;
+                        } else {
+                            frontClaw.setPosition(Constants.frontClawOpen);
+                            backClaw.setPosition(Constants.backClawOpen);
+                            clawBackOpen = true;
+                            clawFrontOpen = true;
 
-                    //Bring Slides down
+                        }
+                    }
+                    if (currentGamepad2.right_bumper && !previousGamepad2.right_bumper && slidePosition[0] > 0) {
+                        if (clawFrontOpen) {
+                            frontClaw.setPosition(Constants.frontClawClosed);
+                            clawFrontOpen = false;
+                        } else {
+                            frontClaw.setPosition(Constants.frontClawOpen);
+                            clawFrontOpen = true;
+                        }
+                    }
+
+                    // Bring Slides down
                     if (currentGamepad2.cross && !previousGamepad2.cross) {
                         dump.setPosition(Constants.dumpDown);
+                        clawFrontOpen = true;
+                        clawBackOpen = true;
+
                         backClaw.setPosition(Constants.backClawOpen);
+
                         frontClaw.setPosition(Constants.frontClawOpen);
                         isSlideLocked[0] = true;
-                        //Does an asynchronous wait
+                        // Does an asynchronous wait
                         new Timer().schedule(new TimerTask() {
                             @Override
                             public void run() {
@@ -268,25 +292,27 @@ public class Teleop extends LinearOpMode {
                     moveSlides(slidePosition[0], 1);
                 }
 
-                //Drops Pixels
+                // Drops Pixels
                 if (currentGamepad2.circle) {
+                    clawFrontOpen = true;
+                    clawBackOpen = true;
                     backClaw.setPosition(Constants.backClawOpen);
                     frontClaw.setPosition(Constants.frontClawOpen);
                 }
 
-                //Launches plane
+                // Launches plane
                 if (currentGamepad2.options) {
                     LaunchPlane();
                 }
 
-                //Anti jam
+                // Anti jam
                 if (currentGamepad2.dpad_left) {
                     intake.setPower(-1);
                     sleep(50);
                     intake.setPower(1);
                 }
 
-                //region Intake Positions
+                // region Intake Positions
                 if (currentGamepad1.circle) {
                     intakeRotate.setPosition(Constants.intakePickupStack4);
                 }
@@ -301,30 +327,30 @@ public class Teleop extends LinearOpMode {
                 if (currentGamepad1.circle) {
                     intakeRotate.setPosition(Constants.intakeUp);
                 }
-                //endregion
+                // endregion
 
-                //region Intake Power Management
+                // region Intake Power Management
 
-                //if the power is 0 turn of intake
+                // if the power is 0 turn of intake
                 if (intakePower == 0) {
                     intake.setPower(0);
                     intakeStage2.setPower(0);
                 }
 
-                //if power is 1 run intake
+                // if power is 1 run intake
                 if (intakePower == 1 && slidePosition[0] == 0) {
                     intake.setPower(1);
                     intakeStage2.setPower(-1);
                 }
 
-                //if power is -1 run intake backwards
+                // if power is -1 run intake backwards
                 if (intakePower == -1) {
                     intake.setPower(-1);
                     intakeStage2.setPower(1);
                 }
 
-                //Checking the previous state so it does not fire multiple times
-                //then toggles the intake power
+                // Checking the previous state so it does not fire multiple times
+                // then toggles the intake power
                 if (currentGamepad2.dpad_up && !previousGamepad2.dpad_up) {
                     if (intakePower != 1) {
                         intakePower = 1;
@@ -333,8 +359,8 @@ public class Teleop extends LinearOpMode {
                     }
                 }
 
-                //Checking the previous state so it does not fire multiple times
-                //then toggles the intake power reverse
+                // Checking the previous state so it does not fire multiple times
+                // then toggles the intake power reverse
                 if (currentGamepad2.dpad_down && !previousGamepad2.dpad_down) {
                     if (intakePower != -1) {
                         intakePower = -1;
@@ -342,11 +368,11 @@ public class Teleop extends LinearOpMode {
                         intakePower = 0;
                     }
                 }
-                //endregion
+                // endregion
 
-                //endregion
+                // endregion
 
-                //region Telemetry
+                // region Telemetry
                 telemetry.addData("dump", dump.getPosition());
                 telemetry.addData("x", poseEstimate.getX());
                 telemetry.addData("y", poseEstimate.getY());
@@ -354,7 +380,7 @@ public class Teleop extends LinearOpMode {
                 telemetry.addData("slide position", leftSlide.getCurrentPosition());
 
                 telemetry.update();
-                //endregion
+                // endregion
             }
         }
     }
