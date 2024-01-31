@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.myCode;
+package org.firstinspires.ftc.teamcode.myCode.auto;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
@@ -72,9 +72,9 @@ public abstract class AutoBaseClass extends LinearOpMode {
         backClaw = hardwareMap.servo.get("backclaw");
         frontClaw = hardwareMap.servo.get("frontclaw");
         intakeStage2 = hardwareMap.get(CRServo.class, "intakestage2");
-        plane = hardwareMap.servo.get("planelock");
-        planeRotate = hardwareMap.servo.get("planerotate");
-        planeLock = hardwareMap.servo.get("plane");
+        plane = hardwareMap.servo.get("planeTrigger");
+        planeRotate = hardwareMap.servo.get("Plane tilt");
+        planeLock = hardwareMap.servo.get("claaamp");
         // endregion
 
         // region Motor Hardware
@@ -136,6 +136,7 @@ public abstract class AutoBaseClass extends LinearOpMode {
     }
 
     protected void returnLocation(double position) {
+        telemetry.addData("Base Class","");
         if (position > 300) {
             whereIsTeamElement = "close";
             telemetry.addData("WE ARE Close to the beams", " ");
@@ -154,7 +155,7 @@ public abstract class AutoBaseClass extends LinearOpMode {
             intakeRotate.setPosition(Constants.intakeUp);
         };
         slideUp = () -> {
-            moveSlides(1400, 1);
+            moveSlides(1000, 1);
             dump.setPosition(Constants.dumpUp);
         };
         getHardware();
@@ -185,12 +186,13 @@ public abstract class AutoBaseClass extends LinearOpMode {
             frontClaw.setPosition(Constants.frontClawOpen);
             backClaw.setPosition(Constants.backClawOpen);
             sleep(100);
-            drive.followTrajectory(drive.trajectoryBuilder(first.end())
-                    .splineToConstantHeading(dropOffPose.vec(), Math.toRadians(180)).build());
-
             dump.setPosition(Constants.dumpDown);
-            sleep(500);
+            drive.followTrajectory(drive.trajectoryBuilder(first.end())
+                   .splineToConstantHeading(dropOffPose.vec(), Math.toRadians(180)).build());
+
             moveSlides(0, 1);
+            sleep(500);
+            sleep(10000);
             // drive.followTrajectorySequence(trajectoryGoToPile);
             // //do pickup stuff
             // intakeRotate.setPosition(.66);

@@ -6,7 +6,7 @@ import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
-public class MeepMeepBlueCloseLeft {
+public class MeepMeepBlueReturnFar {
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(800);
 
@@ -14,13 +14,9 @@ public class MeepMeepBlueCloseLeft {
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(-38.1,61, Math.toRadians(90)))
-                                .splineToLinearHeading(new Pose2d(-32, 35, Math.toRadians(180)), Math.toRadians(0))
-                                .splineToLinearHeading(new Pose2d(-41, 24,Math.toRadians(270)),Math.toRadians(270))
-                                .splineToLinearHeading(new Pose2d(-24, 12,Math.toRadians(0)),0)
-                                .splineToConstantHeading(new Vector2d(0, 10),0)
-                                .splineToConstantHeading(new Vector2d(38, 15),0)
-                               .splineToConstantHeading(new Vector2d(47, 40),0)
+                        drive.trajectorySequenceBuilder(new Pose2d(47, 34,0))
+                                .lineTo(new Vector2d(30, 0))
+                                .lineTo(new Vector2d(-30, 0))
                                 .build()
                 );
 

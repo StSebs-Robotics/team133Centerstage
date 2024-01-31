@@ -18,7 +18,7 @@ import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 import java.util.List;
 
 @Config
-@Autonomous(name = "AutoFarRed", group = "2023-2024")
+@Autonomous(name = "AutoFarRed", group = "old Auto")
 public class AutoFarRed extends LinearOpMode {
 
     public static double X = 5;

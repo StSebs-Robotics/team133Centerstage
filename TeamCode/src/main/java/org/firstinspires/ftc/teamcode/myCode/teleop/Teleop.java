@@ -119,9 +119,9 @@ public class Teleop extends LinearOpMode {
         frontClaw = hardwareMap.servo.get("frontclaw");
         intakeStage2 = hardwareMap.get(CRServo.class, "intakestage2");
 
-        // plane = hardwareMap.servo.get("planelock");
-        // planeRotate = hardwareMap.servo.get("planerotate");
-        // planeLock = hardwareMap.servo.get("plane");
+        plane = hardwareMap.servo.get("planeTrigger");
+        planeRotate = hardwareMap.servo.get("Plane tilt");
+        planeLock = hardwareMap.servo.get("claaamp");
 
         rightsSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -132,7 +132,7 @@ public class Teleop extends LinearOpMode {
         frontClaw.setPosition(Constants.frontClawOpen);
         clawBackOpen = true;
         clawFrontOpen = true;
-        // StorePlane();
+        StorePlane();
         waitForStart();
         if (opModeIsActive()) {
             while (opModeIsActive()) {

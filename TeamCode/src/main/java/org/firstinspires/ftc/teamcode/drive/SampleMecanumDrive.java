@@ -55,8 +55,8 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
  */
 @Config
 public class SampleMecanumDrive extends MecanumDrive {
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(8, 0, 0);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(8, 0, 0);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(8, 0, .5);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(7, 0, .5);
 
     public static double LATERAL_MULTIPLIER = 1;
 
@@ -95,7 +95,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         }
 
 //        imu = hardwareMap.get(IMU.class, "imu");
-//        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+//        IMU.Parameters parameters = new IMU.Parameters(new RevxHubOrientationOnRobot(
 //                DriveConstants.LOGO_FACING_DIR, DriveConstants.USB_FACING_DIR));
 //        imu.initialize(parameters);
 

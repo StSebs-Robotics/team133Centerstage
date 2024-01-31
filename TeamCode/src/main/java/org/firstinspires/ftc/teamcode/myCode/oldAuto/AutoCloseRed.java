@@ -18,7 +18,7 @@ import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 import java.util.List;
 
 @Config
-@Autonomous(name = "AutoCloseRed", group = "2023-2024")
+@Autonomous(name = "AutoCloseRed", group = "old Auto")
 public class AutoCloseRed extends LinearOpMode {
 
     public static double X = 5;
