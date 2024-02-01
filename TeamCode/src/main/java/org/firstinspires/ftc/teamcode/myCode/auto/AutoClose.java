@@ -35,10 +35,10 @@ public class AutoClose extends AutoBaseClass {
     protected void setupTrajectories() {
         intPose = new Pose2d(12, 61, Math.toRadians(90));
         dropOffPose = new Pose2d(40, 25, Math.toRadians(0));
-
         drive = new SampleMecanumDrive(hardwareMap);
 
-        trajectoryCloseBeam = drive.trajectorySequenceBuilder(intPose)
+
+        trajectoryFarBeam = drive.trajectorySequenceBuilder(intPose)
                 .lineTo(new Vector2d(10.2, 55 * multiplier))
                 .lineTo(new Vector2d(25, 45 * multiplier))
                 .addDisplacementMarker(intakeUp)
@@ -51,10 +51,10 @@ public class AutoClose extends AutoBaseClass {
                 .addDisplacementMarker(intakeUp)
                 .lineTo(new Vector2d(10.2, 40 * multiplier))
                 .addDisplacementMarker(slideUp)
-                .splineToLinearHeading(new Pose2d(52.5, 34.5 * multiplier, 0), 0)
+                .splineToLinearHeading(new Pose2d(52.5, 33 * multiplier, 0), 0)
                 // .lineTo(new Vector2d(51, 34.5*multiplier))
                 .build();
-        trajectoryFarBeam = drive.trajectorySequenceBuilder(intPose)
+         trajectoryCloseBeam = drive.trajectorySequenceBuilder(intPose)
                 .lineTo(new Vector2d(10.2, 55 * multiplier))
                 .lineTo(new Vector2d(20, 45 * multiplier))
                 .splineToLinearHeading(new Pose2d(10, 30 * multiplier, Math.toRadians(0)), Math.toRadians(180))
@@ -63,7 +63,11 @@ public class AutoClose extends AutoBaseClass {
                 .splineToConstantHeading(new Vector2d(52.5, 28 * multiplier), 0)
                 .build();
         trajectoryGoToPile = drive.trajectorySequenceBuilder(dropOffPose)
-                .lineTo(new Vector2d(-39, 50 * multiplier))
+                .lineTo(new Vector2d(12, 60))
+                .splineToConstantHeading(new Vector2d(11.61, 33.73), Math.toRadians(270.00))
+                .splineToConstantHeading(new Vector2d(11.61, 42.44), Math.toRadians(90.00))
+                .splineTo(new Vector2d(27.57, 37.18), Math.toRadians(7.57))
+                .splineToLinearHeading(new Pose2d(50.78, 36.82, Math.toRadians(0.00)), Math.toRadians(0.00))
                 .build();
         trajectoryDropOffPixels = drive.trajectorySequenceBuilder(trajectoryGoToPile.end())
                 .lineTo(new Vector2d(-40, 50 * multiplier))

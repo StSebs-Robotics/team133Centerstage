@@ -147,6 +147,7 @@ public abstract class AutoBaseClass extends LinearOpMode {
             whereIsTeamElement = "far";
             telemetry.addData("WE ARE Far from the beams I HOPE BECAUSE", "THIS IS A GUESS BECAUSE WE CAN'T SEE IT");
         }
+        telemetry.update();
     }
 
     @Override
@@ -155,7 +156,7 @@ public abstract class AutoBaseClass extends LinearOpMode {
             intakeRotate.setPosition(Constants.intakeUp);
         };
         slideUp = () -> {
-            moveSlides(1000, 1);
+            moveSlides(1100, 1);
             dump.setPosition(Constants.dumpUp);
         };
         getHardware();
@@ -188,10 +189,10 @@ public abstract class AutoBaseClass extends LinearOpMode {
             sleep(100);
             dump.setPosition(Constants.dumpDown);
             drive.followTrajectory(drive.trajectoryBuilder(first.end())
-                   .splineToConstantHeading(dropOffPose.vec(), Math.toRadians(180)).build());
+                   .lineToConstantHeading(dropOffPose.vec()).build());
 
             moveSlides(0, 1);
-            sleep(500);
+            drive.followTrajectorySequence(trajectoryGoToPile);
             sleep(10000);
             // drive.followTrajectorySequence(trajectoryGoToPile);
             // //do pickup stuff

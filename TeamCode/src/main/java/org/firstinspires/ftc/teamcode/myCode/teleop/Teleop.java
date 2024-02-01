@@ -236,7 +236,6 @@ public class Teleop extends LinearOpMode {
                             @Override
                             public void run() {
                                 slidePosition[0] = 1800;
-                                dump.setPosition(Constants.dumpUp);
                                 isSlideLocked[0] = false;
                             }
                         }, 400L);
