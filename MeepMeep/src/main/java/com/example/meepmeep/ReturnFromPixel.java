@@ -6,7 +6,7 @@ import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
-public class MeepMeepBlueReturnFar {
+public class ReturnFromPixel {
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(800);
 
@@ -14,9 +14,10 @@ public class MeepMeepBlueReturnFar {
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(47, 34,0))
-                                .lineTo(new Vector2d(30, 0))
-                                .lineTo(new Vector2d(-30, 0))
+                        drive.trajectorySequenceBuilder(new Pose2d(-57, 11, Math.toRadians(0)))
+                                .lineTo(new Vector2d(-52,11))
+                                .splineToConstantHeading(new Vector2d(32,11.5),Math.toRadians(0))
+                                .splineToConstantHeading(new Vector2d(47,28),Math.toRadians(0))
                                 .build()
                 );
 
