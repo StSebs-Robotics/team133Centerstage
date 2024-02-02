@@ -74,7 +74,7 @@ public class Teleop extends LinearOpMode {
 
     private void LaunchPlane() {
         planeRotate.setPosition(.25);
-        sleep(100);
+        sleep(150);
         planeLock.setPosition(0);
         sleep(100);
         plane.setPosition(0);
