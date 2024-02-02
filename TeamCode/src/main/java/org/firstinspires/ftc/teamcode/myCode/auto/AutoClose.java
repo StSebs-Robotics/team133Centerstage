@@ -66,7 +66,7 @@ public class AutoClose extends AutoBaseClass {
                 .lineTo( new Vector2d(39,23))
                 .splineToConstantHeading(new Vector2d(32, 10.6), Math.toRadians(200))
                 .splineToConstantHeading(new Vector2d(1,10),Math.toRadians(180))
-                .splineToConstantHeading(new Vector2d(-58,14),Math.toRadians(180))
+                .splineToConstantHeading(new Vector2d(-58,17.5),Math.toRadians(180))
                 //Intake
                 .build();
         trajectoryDropOffPixels = drive.trajectorySequenceBuilder(trajectoryGoToPile.end())
