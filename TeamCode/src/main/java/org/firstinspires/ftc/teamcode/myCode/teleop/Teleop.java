@@ -73,17 +73,17 @@ public class Teleop extends LinearOpMode {
     }
 
     private void LaunchPlane() {
-        planeRotate.setPosition(.1);
+        planeRotate.setPosition(.25);
         sleep(100);
         planeLock.setPosition(0);
         sleep(100);
-        plane.setPosition(.5);
+        plane.setPosition(0);
     }
 
     private void StorePlane() {
-        plane.setPosition(0);
+        plane.setPosition(.4);
         planeLock.setPosition(.4);
-        planeRotate.setPosition(.35);
+        planeRotate.setPosition(0);
     }
 
     @Override
@@ -228,7 +228,7 @@ public class Teleop extends LinearOpMode {
 
                         backClaw.setPosition(Constants.backClawClosed);
                         frontClaw.setPosition(Constants.frontClawClosed);
-                        intakeRotate.setPosition(Constants.intakeUp);
+                        dump.setPosition(Constants.dumpUp);
                         isSlideLocked[0] = true;
                         intakePower = 0;
                         // Does an asynchronous wait
