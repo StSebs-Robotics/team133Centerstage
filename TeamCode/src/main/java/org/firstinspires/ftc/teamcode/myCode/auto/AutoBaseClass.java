@@ -193,6 +193,7 @@ public abstract class AutoBaseClass extends LinearOpMode {
 
             moveSlides(0, 1);
             drive.followTrajectorySequence(trajectoryGoToPile);
+
             sleep(10000);
             // drive.followTrajectorySequence(trajectoryGoToPile);
             // //do pickup stuff
