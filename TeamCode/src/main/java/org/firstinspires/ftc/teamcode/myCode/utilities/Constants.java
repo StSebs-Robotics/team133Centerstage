@@ -29,4 +29,15 @@ public class Constants {
 
     public static int slideMax = 10000;
     // endregion
+    //LaunchPlane
+    public static double triggerLaunch = 0;
+    public static double planeRotateLaunch = .25;
+    public static double planeLockLaunch = .2;
+    //StorePlane
+    public static double triggerStore = 0.4;
+    public static double planeRotateStore = 0;
+    public static double planeLockStore = 0;
+    // region plane
+
+    //endregion
 }

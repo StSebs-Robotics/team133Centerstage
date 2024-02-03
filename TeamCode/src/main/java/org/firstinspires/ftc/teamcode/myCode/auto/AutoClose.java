@@ -8,7 +8,6 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 @Autonomous(name = "AutoV2CloseBlue", group = "2023-2024")
 public class AutoClose extends AutoBaseClass {
-    protected double multiplier = 1;
 
     @Override
     protected void returnLocation(double position) {
@@ -32,9 +31,15 @@ public class AutoClose extends AutoBaseClass {
     }
 
     @Override
-    protected void setupTrajectories() {
+    protected void setVariables() {
         intPose = new Pose2d(12, 61, Math.toRadians(90));
-        dropOffPose = new Pose2d(40, 25, Math.toRadians(0));
+        multiplier = 1;
+    }
+
+    @Override
+    protected void setupTrajectories() {
+        telemetry.addData("pos", multiplier);
+        dropOffPose = new Pose2d(40, 25*multiplier, Math.toRadians(0));
         drive = new SampleMecanumDrive(hardwareMap);
 
 
@@ -47,7 +52,7 @@ public class AutoClose extends AutoBaseClass {
                 .splineToConstantHeading(new Vector2d(52.5, 41 * multiplier), 0)
                 .build();
         trajectoryMiddleBeam = drive.trajectorySequenceBuilder(intPose)
-                .lineTo(new Vector2d(10.2, 34 * multiplier))
+                .lineTo(new Vector2d(10.2, 33.5 * multiplier))
                 .addDisplacementMarker(intakeUp)
                 .lineTo(new Vector2d(10.2, 40 * multiplier))
                 .addDisplacementMarker(slideUp)
@@ -63,14 +68,17 @@ public class AutoClose extends AutoBaseClass {
                 .splineToConstantHeading(new Vector2d(52.5, 28 * multiplier), 0)
                 .build();
         trajectoryGoToPile = drive.trajectorySequenceBuilder(dropOffPose)
-                .lineTo( new Vector2d(39,23))
-                .splineToConstantHeading(new Vector2d(32, 10.6), Math.toRadians(200))
-                .splineToConstantHeading(new Vector2d(1,10),Math.toRadians(180))
-                .splineToConstantHeading(new Vector2d(-58,17.5),Math.toRadians(180))
+                .lineTo( new Vector2d(39,23 * multiplier))
+                .splineToConstantHeading(new Vector2d(32, 10.6 * multiplier), Math.toRadians(200))
+                .splineToConstantHeading(new Vector2d(1,10 * multiplier),Math.toRadians(180))
+                .splineToConstantHeading(new Vector2d(-58,(17.5 * multiplier) + (multiplier == 1 ? 0 : -.5) ),Math.toRadians(180))
                 //Intake
                 .build();
         trajectoryDropOffPixels = drive.trajectorySequenceBuilder(trajectoryGoToPile.end())
-                .lineTo(new Vector2d(-40, 50 * multiplier))
+                .lineTo(new Vector2d(-52,11 * multiplier))
+                .splineToConstantHeading(new Vector2d(32,11.5 * multiplier),Math.toRadians(0))
+                .addDisplacementMarker(slideUp2)
+                .splineToConstantHeading(new Vector2d(52.5, 29 * multiplier),Math.toRadians(0))
                 .build();
     }
 }
