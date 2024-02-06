@@ -14,8 +14,8 @@ public class ReturnFromPixel {
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(-57, 11, Math.toRadians(0)))
-                                .lineTo(new Vector2d(-52,11))
+                        drive.trajectorySequenceBuilder(new Pose2d(-57, 35, Math.toRadians(0)))
+                                .lineTo(new Vector2d(-57,34))
                                 .splineToConstantHeading(new Vector2d(32,11.5),Math.toRadians(0))
                                 .splineToConstantHeading(new Vector2d(47,28),Math.toRadians(0))
                                 .build()
