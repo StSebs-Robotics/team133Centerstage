@@ -70,11 +70,25 @@ public class AutoClose extends AutoBaseClass {
                 .splineToConstantHeading(new Vector2d(52.5, 28 * multiplier), 0)
                 .build();
         trajectoryGoToPile = drive.trajectorySequenceBuilder(dropOffPose)
+<<<<<<< HEAD
+                /*.lineTo( new Vector2d(39,23))
+                .splineToConstantHeading(new Vector2d(32, 10.6), Math.toRadians(200))
+                .splineToConstantHeading(new Vector2d(1,10),Math.toRadians(180))
+                .splineToConstantHeading(new Vector2d(-58,17.5),Math.toRadians(180))
+                //Intake*/
+                .lineTo(new Vector2d(39,28))
+                .splineToConstantHeading(new Vector2d(30,52),Math.toRadians(110))
+                .splineToConstantHeading(new Vector2d(0,60),Math.toRadians(180))
+                .splineToConstantHeading(new Vector2d(-24,60),Math.toRadians(180))
+                .splineToConstantHeading(new Vector2d(-47,48),Math.toRadians(220))
+                .splineToConstantHeading(new Vector2d(-56,35),Math.toRadians(225))
+=======
                 .lineTo( new Vector2d(39,23 * multiplier))
                 .splineToConstantHeading(new Vector2d(32, 10.6 * multiplier), Math.toRadians(200))
                 .splineToConstantHeading(new Vector2d(1,15 * multiplier),Math.toRadians(180))
                 .splineToConstantHeading(new Vector2d(-58,(17.5 * multiplier) + (multiplier == 1 ? 0 : -.5) ),Math.toRadians(180))
                 //Intake
+>>>>>>> b1bd2d98ded42f6d99a409adab32d2a9b1f0635d
                 .build();
         trajectoryDropOffPixels = drive.trajectorySequenceBuilder(trajectoryGoToPile.end())
                 .lineTo(new Vector2d(-52,11 * multiplier))

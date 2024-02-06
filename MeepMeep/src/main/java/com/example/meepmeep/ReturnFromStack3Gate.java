@@ -6,7 +6,7 @@ import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
-public class ReturnFromPixel {
+public class ReturnFromStack3Gate {
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(800);
 
@@ -15,7 +15,9 @@ public class ReturnFromPixel {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(new Pose2d(-57, 35, Math.toRadians(0)))
-                                .lineTo(new Vector2d(-57,34))
+                                .lineTo(new Vector2d(-56.7,32))
+                                .splineToConstantHeading(new Vector2d(-52,14),Math.toRadians(340))
+                                .splineToConstantHeading(new Vector2d(0,10),Math.toRadians(0))
                                 .splineToConstantHeading(new Vector2d(32,11.5),Math.toRadians(0))
                                 .splineToConstantHeading(new Vector2d(47,28),Math.toRadians(0))
                                 .build()
