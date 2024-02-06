@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.myCode.utilities.Constants;
 import java.util.Timer;
 import java.util.TimerTask;
 
-@TeleOp(name = "Teleop2.0")
+@TeleOp(name = "Teleop2.0", group = "2023-2024")
 public class Teleop extends LinearOpMode {
     // region Hardware Variables
     private Servo intakeRotate;

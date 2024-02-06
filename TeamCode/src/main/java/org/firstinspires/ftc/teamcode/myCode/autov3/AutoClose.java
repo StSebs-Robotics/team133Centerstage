@@ -1,12 +1,14 @@
-package org.firstinspires.ftc.teamcode.myCode.auto;
+package org.firstinspires.ftc.teamcode.myCode.autov3;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 @Autonomous(name = "AutoV2CloseBlue", group = "2023-2024")
+@Disabled
 public class AutoClose extends AutoBaseClass {
 
     @Override
@@ -70,7 +72,7 @@ public class AutoClose extends AutoBaseClass {
         trajectoryGoToPile = drive.trajectorySequenceBuilder(dropOffPose)
                 .lineTo( new Vector2d(39,23 * multiplier))
                 .splineToConstantHeading(new Vector2d(32, 10.6 * multiplier), Math.toRadians(200))
-                .splineToConstantHeading(new Vector2d(1,10 * multiplier),Math.toRadians(180))
+                .splineToConstantHeading(new Vector2d(1,15 * multiplier),Math.toRadians(180))
                 .splineToConstantHeading(new Vector2d(-58,(17.5 * multiplier) + (multiplier == 1 ? 0 : -.5) ),Math.toRadians(180))
                 //Intake
                 .build();
@@ -80,5 +82,9 @@ public class AutoClose extends AutoBaseClass {
                 .addDisplacementMarker(slideUp2)
                 .splineToConstantHeading(new Vector2d(52.5, 29 * multiplier),Math.toRadians(0))
                 .build();
+        trajectoryPark = drive.trajectorySequenceBuilder(dropOffPose)
+                .lineTo( new Vector2d(40,30*multiplier))
+                .splineToConstantHeading(new Vector2d(47, 60*multiplier), Math.toRadians(45))
+                .splineToConstantHeading(new Vector2d(58, 62*multiplier), Math.toRadians(0)).build();
     }
 }

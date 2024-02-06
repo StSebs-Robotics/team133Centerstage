@@ -1,8 +1,9 @@
-package org.firstinspires.ftc.teamcode.myCode.oldAuto;
+package org.firstinspires.ftc.teamcode.myCode.autov1;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -18,8 +19,9 @@ import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 import java.util.List;
 
 @Config
-@Autonomous(name = "AutoCloseRed", group = "old Auto")
-public class AutoCloseRed extends LinearOpMode {
+@Disabled
+@Autonomous(name = "AutoFarBlue", group = "old Auto")
+public class AutoFarBlue extends LinearOpMode {
 
     public static double X = 5;
     public static double Y = 5;
@@ -77,38 +79,15 @@ public class AutoCloseRed extends LinearOpMode {
         rightSlide = hardwareMap.get(DcMotor.class, "rightslide");
         leftSlide = hardwareMap.get(DcMotor.class, "leftslide");
         intake = hardwareMap.get(DcMotor.class, "intake");
-        gateLift = hardwareMap.servo.get("gatelift");
-
 
         plane = hardwareMap.servo.get("planelock");
         planeRotate = hardwareMap.servo.get("planerotate");
         planeLock = hardwareMap.servo.get("plane");
+        gateLift = hardwareMap.servo.get("gatelift");
+
 
         rightSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        Pose2d intPose = new Pose2d(15.75, -61, Math.toRadians(-90));
-
-        GetTrag trags = new GetTrag(false, intPose,drive,
-                () -> {
-                    intakeRotate.setPosition(1);
-                },
-                () -> {
-                    moveSlides(-825, 1);
-                    dump.setPosition(1);
-                },
-                () -> {
-                    gateLift.setPosition(.3);
-                },
-                () -> {
-                    gateLift.setPosition(0);
-                    intakeRotate.setPosition(.66);
-                    intake.setPower(1);
-                },
-                () -> {
-                    intakeRotate.setPosition(1);
-                    intake.setPower(0);
-                });
 
         // Wait for the DS start button to be touched.
         telemetry.addData("DS preview on/off", "3 dots, Camera Stream");
@@ -119,7 +98,7 @@ public class AutoCloseRed extends LinearOpMode {
         telemetry.addData("GOGOGO", "You Good Fam");
         telemetry.update();
 
-
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         dump.setPosition(.14);
         plane.setPosition(0);
         planeLock.setPosition(.4);
@@ -127,6 +106,7 @@ public class AutoCloseRed extends LinearOpMode {
 
         waitForStart();
         if (opModeIsActive()) {
+            Pose2d intPose = new Pose2d(-38.1, 61, Math.toRadians(90));
 
 
             drive.setPoseEstimate(intPose);
@@ -136,24 +116,37 @@ public class AutoCloseRed extends LinearOpMode {
             visionPortal.stopStreaming();
 
             sleep(500);
-
+            GetTrag trags = new GetTrag(true, intPose,drive,
+                    () -> {
+                        intakeRotate.setPosition(1);
+                    },
+                    () -> {
+                        moveSlides(-825, 1);
+                        dump.setPosition(1);
+                    },
+                    () -> {
+                        gateLift.setPosition(.3);
+                    },
+                    () -> {
+                        gateLift.setPosition(0);
+                        intakeRotate.setPosition(.66);
+                        intake.setPower(1);
+                    },
+                    () -> {
+                        intakeRotate.setPosition(1);
+                        intake.setPower(0);
+                    });
 
             Pose2d endPose;
 
             if (whereIsTeamElement == "middle") {
-                telemetry.addData("hereMiddle", "here");
-                telemetry.update();
-                drive.followTrajectorySequence(trags.getCloseMiddle());
+                drive.followTrajectorySequence(trags.getFarMiddle());
                 endPose = trags.getFarMiddle().end();
             } else if (whereIsTeamElement == "right") {
-                telemetry.addData("hereRight", "here");
-                telemetry.update();
-                drive.followTrajectorySequence(trags.getCloseRight());
+                drive.followTrajectorySequence(trags.getFarRight());
                 endPose = trags.getFarRight().end();
             } else {
-                telemetry.addData("hereLeft", "here");
-                telemetry.update();
-                drive.followTrajectorySequence(trags.getCloseLeft());
+                drive.followTrajectorySequence(trags.getFarLeft());
                 endPose = trags.getFarLeft().end();
             }
             //return to position
@@ -165,7 +158,10 @@ public class AutoCloseRed extends LinearOpMode {
             dump.setPosition(.14);
             sleep(500);
             moveSlides(0, 1);
-//            drive.followTrajectorySequence(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+            if (whereIsTeamElement == "left") {
+                drive.followTrajectory(drive.trajectoryBuilder(drive.getPoseEstimate()).strafeRight(5).build());
+            }
+            //drive.followTrajectorySequence(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
 //                    .lineTo(new Vector2d(30, 0))
 //                    .lineTo(new Vector2d(-30, 0))
 //                    .build());
@@ -173,7 +169,7 @@ public class AutoCloseRed extends LinearOpMode {
 
 
                 // Share the CPU.
-                sleep(50);
+                sleep(20);
             }
         }
 
@@ -260,14 +256,14 @@ public class AutoCloseRed extends LinearOpMode {
                 yMultiplier = -1;
             }
         }
-        if (xT > 400) {
-            whereIsTeamElement = "left";
+        if (xT > 300) {
+            whereIsTeamElement = "right";
             telemetry.addData("WE ARE AT THE RIGHT", " ");
         } else if (xT >= 0) {
             whereIsTeamElement = "middle";
             telemetry.addData("WE ARE AT THE Middle", " ");
         } else {
-            whereIsTeamElement = "right";
+            whereIsTeamElement = "left";
             telemetry.addData("WE ARE AT THE LEFT I HOPE BECAUSE", "THIS IS A GUESS BECAUSE WE CAN'T SEE IT");
         }
 

@@ -1,8 +1,8 @@
-package org.firstinspires.ftc.teamcode.myCode.auto;
+package org.firstinspires.ftc.teamcode.myCode.autov2;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.MarkerCallback;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -21,7 +21,7 @@ import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-
+@Disabled
 public abstract class AutoBaseClass extends LinearOpMode {
     // region Servo Variables Definitions
     protected Servo intakeRotate;
@@ -64,6 +64,8 @@ public abstract class AutoBaseClass extends LinearOpMode {
     protected TrajectorySequence trajectoryFarBeam;
     protected TrajectorySequence trajectoryGoToPile;
     protected TrajectorySequence trajectoryDropOffPixels;
+    protected TrajectorySequence trajectoryPark;
+    protected boolean fullAuto = true;
 
     protected TrajectorySequence trajectoryBack;
 
@@ -210,28 +212,33 @@ public abstract class AutoBaseClass extends LinearOpMode {
             backClaw.setPosition(Constants.backClawOpen);
             sleep(100);
             dump.setPosition(Constants.dumpDown);
-            drive.followTrajectory(drive.trajectoryBuilder(first.end())
-                   .lineToConstantHeading(dropOffPose.vec()).build());
+                drive.followTrajectory(drive.trajectoryBuilder(first.end())
+                        .lineToConstantHeading(dropOffPose.vec()).build());
 
             moveSlides(0, 1);
-            drive.followTrajectorySequence(trajectoryGoToPile);
-            intake.setPower(1);
-            intakeStage2.setPower(-1);
-            intakeRotate.setPosition(Constants.intakePickupStack5);
-            sleep(1000);
-            intakeRotate.setPosition(Constants.intakePickupStack4);
-            sleep(750);
-            intakeRotate.setPosition(Constants.intakeUp);
-            sleep(500);
-            drive.followTrajectorySequence(trajectoryDropOffPixels);
-            intake.setPower(0);
-            intakeStage2.setPower(0);
-            frontClaw.setPosition(Constants.frontClawOpen);
-            backClaw.setPosition(Constants.backClawOpen);
-            drive.followTrajectory(drive.trajectoryBuilder(trajectoryDropOffPixels.end()).back(3).build());
-            dump.setPosition(Constants.dumpDown);
-            sleep(200);
-            moveSlides(0,1);
+            if (fullAuto) {
+                drive.followTrajectorySequence(trajectoryGoToPile);
+                intake.setPower(1);
+                intakeStage2.setPower(-1);
+                intakeRotate.setPosition(Constants.intakePickupStack5);
+                sleep(1000);
+                intakeRotate.setPosition(Constants.intakePickupStack4);
+                sleep(750);
+                intakeRotate.setPosition(Constants.intakeUp);
+                sleep(500);
+                drive.followTrajectorySequence(trajectoryDropOffPixels);
+
+                intake.setPower(0);
+                intakeStage2.setPower(0);
+                frontClaw.setPosition(Constants.frontClawOpen);
+                backClaw.setPosition(Constants.backClawOpen);
+                drive.followTrajectory(drive.trajectoryBuilder(trajectoryDropOffPixels.end()).back(3).build());
+                dump.setPosition(Constants.dumpDown);
+                sleep(200);
+                moveSlides(0, 1);
+            } else {
+                drive.followTrajectorySequence(trajectoryPark);
+            }
 
             sleep(10000);
             // drive.followTrajectorySequence(trajectoryGoToPile);

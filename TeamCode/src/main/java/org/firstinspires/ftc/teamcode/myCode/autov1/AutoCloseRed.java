@@ -1,8 +1,9 @@
-package org.firstinspires.ftc.teamcode.myCode.oldAuto;
+package org.firstinspires.ftc.teamcode.myCode.autov1;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -18,8 +19,9 @@ import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 import java.util.List;
 
 @Config
-@Autonomous(name = "AutoFarRed", group = "old Auto")
-public class AutoFarRed extends LinearOpMode {
+@Disabled
+@Autonomous(name = "AutoCloseRed", group = "old Auto")
+public class AutoCloseRed extends LinearOpMode {
 
     public static double X = 5;
     public static double Y = 5;
@@ -77,18 +79,17 @@ public class AutoFarRed extends LinearOpMode {
         rightSlide = hardwareMap.get(DcMotor.class, "rightslide");
         leftSlide = hardwareMap.get(DcMotor.class, "leftslide");
         intake = hardwareMap.get(DcMotor.class, "intake");
+        gateLift = hardwareMap.servo.get("gatelift");
+
 
         plane = hardwareMap.servo.get("planelock");
         planeRotate = hardwareMap.servo.get("planerotate");
         planeLock = hardwareMap.servo.get("plane");
 
-        planeLock = hardwareMap.servo.get("gatelift");
-
-
         rightSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        Pose2d intPose = new Pose2d(-33, -61, Math.toRadians(-90));
+        Pose2d intPose = new Pose2d(15.75, -61, Math.toRadians(-90));
 
         GetTrag trags = new GetTrag(false, intPose,drive,
                 () -> {
@@ -109,8 +110,7 @@ public class AutoFarRed extends LinearOpMode {
                 () -> {
                     intakeRotate.setPosition(1);
                     intake.setPower(0);
-                }
-                );
+                });
 
         // Wait for the DS start button to be touched.
         telemetry.addData("DS preview on/off", "3 dots, Camera Stream");
@@ -145,21 +145,21 @@ public class AutoFarRed extends LinearOpMode {
             if (whereIsTeamElement == "middle") {
                 telemetry.addData("hereMiddle", "here");
                 telemetry.update();
-                drive.followTrajectorySequence(trags.getFarMiddle());
+                drive.followTrajectorySequence(trags.getCloseMiddle());
                 endPose = trags.getFarMiddle().end();
             } else if (whereIsTeamElement == "right") {
                 telemetry.addData("hereRight", "here");
                 telemetry.update();
-                drive.followTrajectorySequence(trags.getFarRight());
+                drive.followTrajectorySequence(trags.getCloseRight());
                 endPose = trags.getFarRight().end();
             } else {
                 telemetry.addData("hereLeft", "here");
                 telemetry.update();
-                drive.followTrajectorySequence(trags.getFarLeft());
+                drive.followTrajectorySequence(trags.getCloseLeft());
                 endPose = trags.getFarLeft().end();
             }
             //return to position
-            dumpLocker.setPower(-.25);
+            dumpLocker.setPower(-.5);
             sleep(800);
 
             drive.followTrajectory(drive.trajectoryBuilder(endPose).back(6).build());
@@ -167,7 +167,10 @@ public class AutoFarRed extends LinearOpMode {
             dump.setPosition(.14);
             sleep(500);
             moveSlides(0, 1);
-            //drive.followTrajectorySequence(trags.getReturnTrag());
+//            drive.followTrajectorySequence(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+//                    .lineTo(new Vector2d(30, 0))
+//                    .lineTo(new Vector2d(-30, 0))
+//                    .build());
             while (opModeIsActive()) {
 
 

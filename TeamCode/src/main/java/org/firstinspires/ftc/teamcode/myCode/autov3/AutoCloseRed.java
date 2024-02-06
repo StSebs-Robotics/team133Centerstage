@@ -1,10 +1,8 @@
-package org.firstinspires.ftc.teamcode.myCode.auto;
+package org.firstinspires.ftc.teamcode.myCode.autov3;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 @Autonomous(name = "AutoV2CloseRed", group = "2023-2024")
 public class AutoCloseRed extends AutoClose {
