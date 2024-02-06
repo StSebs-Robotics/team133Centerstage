@@ -73,17 +73,17 @@ public class Teleop extends LinearOpMode {
     }
 
     private void LaunchPlane() {
-        planeRotate.setPosition(.25);
+        planeRotate.setPosition(Constants.planeRotateLaunch);
+        planeLock.setPosition(Constants.planeLockLaunch);
         sleep(150);
-        planeLock.setPosition(0);
         sleep(100);
-        plane.setPosition(0);
+        plane.setPosition(Constants.triggerLaunch);
     }
 
     private void StorePlane() {
-        plane.setPosition(.4);
-        planeLock.setPosition(.4);
-        planeRotate.setPosition(0);
+        plane.setPosition(Constants.triggerStore);
+        planeLock.setPosition(Constants.planeLockStore);
+        planeRotate.setPosition(Constants.planeRotateStore);
     }
 
     @Override
@@ -300,8 +300,11 @@ public class Teleop extends LinearOpMode {
                 }
 
                 // Launches plane
-                if (currentGamepad2.options) {
+                if (currentGamepad2.share) {
                     LaunchPlane();
+                }
+                if (currentGamepad1.dpad_down) {
+                    StorePlane();
                 }
 
                 // Anti jam
@@ -316,15 +319,14 @@ public class Teleop extends LinearOpMode {
                     intakeRotate.setPosition(Constants.intakePickupStack4);
                 }
 
-                if (currentGamepad2.square) {
-                    intakeRotate.setPosition(Constants.intakePickupStack1);
-                }
-
                 if (currentGamepad1.triangle) {
                     intakeRotate.setPosition(Constants.intakePickupStack5);
                 }
-                if (currentGamepad1.circle) {
-                    intakeRotate.setPosition(Constants.intakeUp);
+
+
+
+                if (currentGamepad2.square) {
+                    intakeRotate.setPosition(Constants.intakePickupStack1);
                 }
                 // endregion
 

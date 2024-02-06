@@ -19,6 +19,8 @@ import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public abstract class AutoBaseClass extends LinearOpMode {
     // region Servo Variables Definitions
@@ -51,6 +53,7 @@ public abstract class AutoBaseClass extends LinearOpMode {
     protected int multiplier = 1;
     protected MarkerCallback intakeUp;
     protected MarkerCallback slideUp;
+    protected MarkerCallback slideUp2;
     protected Pose2d intPose;
     protected Pose2d dropOffPose;
     protected double angleAdjust = 0;
@@ -116,6 +119,8 @@ public abstract class AutoBaseClass extends LinearOpMode {
         visionPortal = builder.build();
     }
 
+    protected abstract void setVariables();
+
     protected void readTeamElement() {
 
         List<Recognition> currentRecognitions = tfod.getRecognitions();
@@ -159,11 +164,28 @@ public abstract class AutoBaseClass extends LinearOpMode {
             moveSlides(1100, 1);
             dump.setPosition(Constants.dumpUp);
         };
+        slideUp2 = () -> {
+            frontClaw.setPosition(Constants.frontClawClosed);
+            backClaw.setPosition(Constants.backClawClosed);
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    intake.setPower(0);
+                    intakeStage2.setPower(0);
+                    moveSlides(1500, 1);
+                    dump.setPosition(Constants.dumpUp);
+                }
+            }, 200L);
+        };
+        setVariables();
         getHardware();
 
         setupTrajectories();
         drive.setPoseEstimate(intPose);
         sleep(6000);
+        plane.setPosition(Constants.triggerStore);
+        planeLock.setPosition(Constants.planeLockStore);
+        planeRotate.setPosition(Constants.planeRotateStore);
         frontClaw.setPosition(Constants.frontClawClosed);
         backClaw.setPosition(Constants.backClawClosed);
         telemetry.addData("PosX", intPose.getX());
@@ -193,6 +215,23 @@ public abstract class AutoBaseClass extends LinearOpMode {
 
             moveSlides(0, 1);
             drive.followTrajectorySequence(trajectoryGoToPile);
+            intake.setPower(1);
+            intakeStage2.setPower(-1);
+            intakeRotate.setPosition(Constants.intakePickupStack5);
+            sleep(1000);
+            intakeRotate.setPosition(Constants.intakePickupStack4);
+            sleep(750);
+            intakeRotate.setPosition(Constants.intakeUp);
+            sleep(500);
+            drive.followTrajectorySequence(trajectoryDropOffPixels);
+            intake.setPower(0);
+            intakeStage2.setPower(0);
+            frontClaw.setPosition(Constants.frontClawOpen);
+            backClaw.setPosition(Constants.backClawOpen);
+            drive.followTrajectory(drive.trajectoryBuilder(trajectoryDropOffPixels.end()).back(3).build());
+            dump.setPosition(Constants.dumpDown);
+            sleep(200);
+            moveSlides(0,1);
 
             sleep(10000);
             // drive.followTrajectorySequence(trajectoryGoToPile);
