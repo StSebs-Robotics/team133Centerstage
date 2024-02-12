@@ -273,20 +273,7 @@ public class Auto extends LinearOpMode {
         if (isClose) {
             intPose = isBlue ? positions.startBlueClosePos: positions.startRedClosePos;
             double multipler = isBlue ? 1 : -1;
-            TrajectorySequenceBuilder unfinishedMiddle = drive.trajectorySequenceBuilder(intPose);
-            TrajectorySequenceBuilder unfinishedClose = drive.trajectorySequenceBuilder(intPose);
-            TrajectorySequenceBuilder unfinishedFar = drive.trajectorySequenceBuilder(intPose);
-
-
-
-            trajectoryMiddle = drive.trajectorySequenceBuilder(positions.startRedFarPos).build();
-            trajectoryClose = drive.trajectorySequenceBuilder(positions.startRedFarPos).build();
-            trajectoryFar = drive.trajectorySequenceBuilder(positions.startRedFarPos).build();
-        } else {
-            intPose = isBlue ? positions.startBlueFarPos : positions.startRedFarPos;
-            double multipler = isBlue ? 1 : -1;
             TrajectorySequenceBuilder unfinishedMiddle = drive.trajectorySequenceBuilder(intPose)
-                    //Liam this is where i added code
                     .lineTo(new Vector2d(10.2, 33.5 * multiplier))
                     .addDisplacementMarker(intakeUp)
                     .lineTo(new Vector2d(10.2, 40 * multiplier))
@@ -300,6 +287,20 @@ public class Auto extends LinearOpMode {
                     .splineToConstantHeading(new Vector2d(-52,50),Math.toRadians(220))
                     .splineToConstantHeading(new Vector2d(-57,35),Math.toRadians(270))
                     ;
+            TrajectorySequenceBuilder unfinishedClose = drive.trajectorySequenceBuilder(intPose);
+            TrajectorySequenceBuilder unfinishedFar = drive.trajectorySequenceBuilder(intPose);
+
+
+
+            trajectoryMiddle = drive.trajectorySequenceBuilder(positions.startRedFarPos).build();
+            trajectoryClose = drive.trajectorySequenceBuilder(positions.startRedFarPos).build();
+            trajectoryFar = drive.trajectorySequenceBuilder(positions.startRedFarPos).build();
+        } else {
+            intPose = isBlue ? positions.startBlueFarPos : positions.startRedFarPos;
+            double multipler = isBlue ? 1 : -1;
+            TrajectorySequenceBuilder unfinishedMiddle = drive.trajectorySequenceBuilder(intPose)
+                    //Liam this is where i added code
+
             TrajectorySequenceBuilder unfinishedClose = drive.trajectorySequenceBuilder(intPose);
             TrajectorySequenceBuilder unfinishedFar = drive.trajectorySequenceBuilder(intPose);
 
