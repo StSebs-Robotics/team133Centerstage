@@ -19,7 +19,7 @@ public class MeepMeepBlueCloseLeft {
                                 .lineTo(new Vector2d(10.2, 40 * multiplier))
                                 .splineToLinearHeading(new Pose2d(52.5, 33 * multiplier, 0), 0)
                                 // .lineTo(new Vector2d(51, 34.5*multiplier))
-                                .build();
+                                .build()
 //                                .splineToLinearHeading(new Pose2d(-32, 35, Math.toRadians(180)), Math.toRadians(0))
 //                                .splineToLinearHeading(new Pose2d(-41, 24,Math.toRadians(270)),Math.toRadians(270))
 //                                .splineToLinearHeading(new Pose2d(-24, 12,Math.toRadians(0)),0)

@@ -219,7 +219,6 @@ public class Auto extends LinearOpMode {
         intakeUp = () -> {
             intakeRotate.setPosition(Constants.intakeUp);
         };
-        intPose = new Pose2d();
 
         intake1Pixel = () -> {
             intake.setPower(1);
@@ -270,11 +269,32 @@ public class Auto extends LinearOpMode {
 
         positions = new Positions(isRed);
 
-        if (isFar) {
+        if (isClose) {
+            intPose = isBlue ? positions.startBlueClosePos: positions.startRedClosePos;
             double multipler = isBlue ? 1 : -1;
-            TrajectorySequenceBuilder unfinishedMiddle = drive.trajectorySequenceBuilder(positions.startRedFarPos);
-            TrajectorySequenceBuilder unfinishedClose = drive.trajectorySequenceBuilder(positions.startRedFarPos);
-            TrajectorySequenceBuilder unfinishedFar = drive.trajectorySequenceBuilder(positions.startRedFarPos);
+            TrajectorySequenceBuilder unfinishedMiddle = drive.trajectorySequenceBuilder(intPose);
+            TrajectorySequenceBuilder unfinishedClose = drive.trajectorySequenceBuilder(intPose);
+            TrajectorySequenceBuilder unfinishedFar = drive.trajectorySequenceBuilder(intPose);
+
+
+
+            trajectoryMiddle = drive.trajectorySequenceBuilder(positions.startRedFarPos).build();
+            trajectoryClose = drive.trajectorySequenceBuilder(positions.startRedFarPos).build();
+            trajectoryFar = drive.trajectorySequenceBuilder(positions.startRedFarPos).build();
+        } else {
+            intPose = isBlue ? positions.startBlueFarPos : positions.startRedFarPos;
+            double multipler = isBlue ? 1 : -1;
+            TrajectorySequenceBuilder unfinishedMiddle = drive.trajectorySequenceBuilder(intPose)
+                    ;
+            TrajectorySequenceBuilder unfinishedClose = drive.trajectorySequenceBuilder(intPose);
+            TrajectorySequenceBuilder unfinishedFar = drive.trajectorySequenceBuilder(intPose);
+
+
+
+
+            trajectoryMiddle =unfinishedMiddle.build();
+            trajectoryClose = unfinishedClose.build();
+            trajectoryFar = unfinishedFar.build();
 
         }
 
@@ -354,7 +374,13 @@ public class Auto extends LinearOpMode {
 
             //Read team element and wait
             readTeamElement();
-
+            if (whereIsTeamElement == "close") {
+                drive.followTrajectorySequence(trajectoryClose);
+            } else if (whereIsTeamElement == "middle") {
+                drive.followTrajectorySequence(trajectoryMiddle);
+            } else {
+                drive.followTrajectorySequence(trajectoryFar);
+            }
             sleep(10000);
         }
     }

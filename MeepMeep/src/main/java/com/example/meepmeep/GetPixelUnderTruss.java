@@ -9,18 +9,18 @@ import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 public class GetPixelUnderTruss {
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(800);
-
+        double multiplier = -1;
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(new Pose2d(40, 25, Math.toRadians(0)))
-                                .lineTo(new Vector2d(39,28))
+                                .lineTo(new Vector2d(39,28 ))
                                 .splineToConstantHeading(new Vector2d(30,52),Math.toRadians(110))
-                                .splineToConstantHeading(new Vector2d(0,60),Math.toRadians(180))
-                                .splineToConstantHeading(new Vector2d(-24,60),Math.toRadians(180))
-                                .splineToConstantHeading(new Vector2d(-47,48),Math.toRadians(220))
-                                .splineToConstantHeading(new Vector2d(-57,35),Math.toRadians(225))
+                                .splineToConstantHeading(new Vector2d(0,58),Math.toRadians(180))
+                                .splineToConstantHeading(new Vector2d(-24,58),Math.toRadians(180))
+                                .splineToConstantHeading(new Vector2d(-52,50),Math.toRadians(220))
+                                .splineToConstantHeading(new Vector2d(-57,35),Math.toRadians(270))
                                 .build()
                 );
 

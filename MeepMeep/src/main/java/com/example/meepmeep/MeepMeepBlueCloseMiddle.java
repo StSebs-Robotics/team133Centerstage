@@ -15,10 +15,19 @@ public class MeepMeepBlueCloseMiddle {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(new Pose2d(10.2,61, Math.toRadians(90)))
-                                .lineTo(new Vector2d(10.2, 33))
-                                .lineTo(new Vector2d(10.2, 40))
-                                .splineToLinearHeading(new Pose2d(45, 35.5,0),0)
-                                .lineTo(new Vector2d(51, 35.5))
+                                .lineTo(new Vector2d(10.2, 60.5))
+                                .splineToConstantHeading(new Vector2d(10.2, 37), Math.toRadians(280))
+                                .splineToConstantHeading(new Vector2d(26,31),Math.toRadians(0))
+                                .lineToLinearHeading(new Pose2d(51, 35, Math.toRadians(0)))
+//                                .splineToConstantHeading(new Vector2d(29, 31), Math.toRadians(0))
+//                                .splineToLinearHeading(new Pose2d(51, 35, Math.toRadians(0)), Math.toRadians(0))
+//                                .splineTo(new Vector2d(51, 35), Math.toRadians(0))
+
+//                                .lineTo(new Vector2d(10.2, 60.5))
+//                                .splineToLinearHeading(new Pose2d(10.2, 37, Math.toRadians(90)), Math.toRadians(90))
+////                                .splineToLinearHeading(new Pose2d(26, 31, Math.toRadians(0)), Math.toRadians(0))
+////                                .splineToLinearHeading(new Pose2d(51, 35, Math.toRadians(180)), Math.toRadians(0))
+
                                 .build()
                 );
 
