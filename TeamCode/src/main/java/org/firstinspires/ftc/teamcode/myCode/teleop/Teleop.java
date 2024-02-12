@@ -53,8 +53,8 @@ public class Teleop extends LinearOpMode {
 
     // endregion
 
-    private int[] slidePosition = { 0 };
-    private boolean[] isSlideLocked = { false };
+    private int[] slidePosition = {0};
+    private boolean[] isSlideLocked = {false};
     private int intakePower = 0;
     private double dumpPos = 0;
     private boolean clawFrontOpen = true;
@@ -228,7 +228,6 @@ public class Teleop extends LinearOpMode {
 
                         backClaw.setPosition(Constants.backClawClosed);
                         frontClaw.setPosition(Constants.frontClawClosed);
-                        dump.setPosition(Constants.dumpUp);
                         isSlideLocked[0] = true;
                         intakePower = 0;
                         // Does an asynchronous wait
@@ -236,9 +235,15 @@ public class Teleop extends LinearOpMode {
                             @Override
                             public void run() {
                                 slidePosition[0] = 1800;
+                                new Timer().schedule(new TimerTask() {
+                                    @Override
+                                    public void run() {
+                                        dump.setPosition(Constants.dumpUp);
+                                    }
+                                }, 300L);
                                 isSlideLocked[0] = false;
                             }
-                        }, 400L);
+                        }, 200L);
                     }
                     if (currentGamepad2.left_bumper && !previousGamepad2.left_bumper && slidePosition[0] > 0) {
                         if (clawBackOpen) {
@@ -322,7 +327,6 @@ public class Teleop extends LinearOpMode {
                 if (currentGamepad1.triangle) {
                     intakeRotate.setPosition(Constants.intakePickupStack5);
                 }
-
 
 
                 if (currentGamepad2.square) {

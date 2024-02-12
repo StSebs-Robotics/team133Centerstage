@@ -20,7 +20,7 @@ public class Constants {
     // endregion
     // region Claws
     public static double frontClawOpen = .62;
-    public static double frontClawClosed = .78;
+    public static double frontClawClosed = .74;
 
     public static double backClawOpen = .86;
     public static double backClawClosed = .75;
