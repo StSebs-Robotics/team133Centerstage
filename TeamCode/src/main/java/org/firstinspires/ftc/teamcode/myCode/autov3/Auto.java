@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.myCode.autov3;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.MarkerCallback;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -285,6 +286,18 @@ public class Auto extends LinearOpMode {
             intPose = isBlue ? positions.startBlueFarPos : positions.startRedFarPos;
             double multipler = isBlue ? 1 : -1;
             TrajectorySequenceBuilder unfinishedMiddle = drive.trajectorySequenceBuilder(intPose)
+                    .lineTo(new Vector2d(10.2, 33.5 * multiplier))
+                    .addDisplacementMarker(intakeUp)
+                    .lineTo(new Vector2d(10.2, 40 * multiplier))
+                    .addDisplacementMarker(slideUp)
+                    .splineToLinearHeading(new Pose2d(52.5, 33 * multiplier, 0), 0)
+
+                    .lineTo(new Vector2d(39,28 ))
+                    .splineToConstantHeading(new Vector2d(30,52),Math.toRadians(110))
+                    .splineToConstantHeading(new Vector2d(0,58),Math.toRadians(180))
+                    .splineToConstantHeading(new Vector2d(-24,58),Math.toRadians(180))
+                    .splineToConstantHeading(new Vector2d(-52,50),Math.toRadians(220))
+                    .splineToConstantHeading(new Vector2d(-57,35),Math.toRadians(270))
                     ;
             TrajectorySequenceBuilder unfinishedClose = drive.trajectorySequenceBuilder(intPose);
             TrajectorySequenceBuilder unfinishedFar = drive.trajectorySequenceBuilder(intPose);
