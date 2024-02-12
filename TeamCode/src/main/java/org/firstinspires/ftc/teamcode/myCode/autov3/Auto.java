@@ -286,6 +286,7 @@ public class Auto extends LinearOpMode {
             intPose = isBlue ? positions.startBlueFarPos : positions.startRedFarPos;
             double multipler = isBlue ? 1 : -1;
             TrajectorySequenceBuilder unfinishedMiddle = drive.trajectorySequenceBuilder(intPose)
+                    //Liam this is where i added code
                     .lineTo(new Vector2d(10.2, 33.5 * multiplier))
                     .addDisplacementMarker(intakeUp)
                     .lineTo(new Vector2d(10.2, 40 * multiplier))
