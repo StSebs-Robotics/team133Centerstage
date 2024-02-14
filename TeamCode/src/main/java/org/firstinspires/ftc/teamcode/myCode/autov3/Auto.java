@@ -113,6 +113,7 @@ public class Auto extends LinearOpMode {
         leftSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         leftSlide.setDirection(DcMotorSimple.Direction.REVERSE);
+        drive = new SampleMecanumDrive(hardwareMap);
         // endregion
 
         // region Camera Setup
@@ -298,7 +299,7 @@ public class Auto extends LinearOpMode {
         } else {
             intPose = isBlue ? positions.startBlueFarPos : positions.startRedFarPos;
             double multipler = isBlue ? 1 : -1;
-            TrajectorySequenceBuilder unfinishedMiddle = drive.trajectorySequenceBuilder(intPose)
+            TrajectorySequenceBuilder unfinishedMiddle = drive.trajectorySequenceBuilder(intPose);
                     //Liam this is where i added code
 
             TrajectorySequenceBuilder unfinishedClose = drive.trajectorySequenceBuilder(intPose);
@@ -366,8 +367,8 @@ public class Auto extends LinearOpMode {
         }
         //Sets up the Trajectories the sleep
         //is to ensure that the camera works
-        setupTrajectories();
         drive.setPoseEstimate(intPose);
+        setupTrajectories();
         sleep(6000);
 
         // region Initialize Servos
