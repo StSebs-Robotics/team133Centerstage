@@ -35,9 +35,9 @@ public class Positions {
         dropOtherMiddlePos = new Pose2d();
         centerPos = new Pose2d();
 
-        startRedFarPos = new Pose2d(-38.1,61);
-        startRedClosePos = new Pose2d(15.75, -61);
-        startBlueFarPos = new Pose2d(-33,-61);
-        startBlueClosePos = new Pose2d(40,25);
-    }
-}
+        startRedFarPos = new Pose2d(-38.1,61,Math.toRadians(-90));
+        startRedClosePos = new Pose2d(15.75, -61, Math.toRadians(-90));
+        startBlueFarPos = new Pose2d(-33,-61,Math.toRadians(90));
+        startBlueClosePos = new Pose2d(12,61, Math.toRadians(90));
+
+}}

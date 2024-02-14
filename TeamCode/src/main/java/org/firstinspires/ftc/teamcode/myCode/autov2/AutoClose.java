@@ -54,12 +54,26 @@ public class AutoClose extends AutoBaseClass {
                 .splineToConstantHeading(new Vector2d(52.5, 41 * multiplier), 0)
                 .build();
         trajectoryMiddleBeam = drive.trajectorySequenceBuilder(intPose)
+//                .lineTo(new Vector2d(10.2, 33.5 * multiplier))
+//                .addDisplacementMarker(intakeUp)
+//                .lineTo(new Vector2d(10.2, 40 * multiplier))
+//                .addDisplacementMarker(slideUp)
+//                .splineToLinearHeading(new Pose2d(52.5, 33 * multiplier, 0), 0)
+//                // .lineTo(new Vector2d(51, 34.5*multiplier))
+
+                //John changing stuff
                 .lineTo(new Vector2d(10.2, 33.5 * multiplier))
                 .addDisplacementMarker(intakeUp)
                 .lineTo(new Vector2d(10.2, 40 * multiplier))
                 .addDisplacementMarker(slideUp)
                 .splineToLinearHeading(new Pose2d(52.5, 33 * multiplier, 0), 0)
-                // .lineTo(new Vector2d(51, 34.5*multiplier))
+
+                .lineTo(new Vector2d(39,28 ))
+                .splineToConstantHeading(new Vector2d(30,52),Math.toRadians(110))
+                .splineToConstantHeading(new Vector2d(0,58),Math.toRadians(180))
+                .splineToConstantHeading(new Vector2d(-24,58),Math.toRadians(180))
+                .splineToConstantHeading(new Vector2d(-52,50),Math.toRadians(220))
+                .splineToConstantHeading(new Vector2d(-57,35),Math.toRadians(270))
                 .build();
          trajectoryCloseBeam = drive.trajectorySequenceBuilder(intPose)
                 .lineTo(new Vector2d(10.2, 55 * multiplier))
