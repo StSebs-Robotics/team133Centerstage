@@ -268,6 +268,16 @@ public class Auto extends LinearOpMode {
                 }
             }, 200L);
         };
+        MarkerCallback intakePixel = () -> {
+            intake.setPower(1);
+            intakeStage2.setPower(-1);
+            intakeRotate.setPosition(Constants.intakePickupStack5);
+            sleep(1000);
+            intakeRotate.setPosition(Constants.intakePickupStack4);
+            sleep(750);
+            intakeRotate.setPosition(Constants.intakeUp);
+            sleep(500);
+        };
 
         positions = new Positions(isRed);
 
@@ -275,27 +285,32 @@ public class Auto extends LinearOpMode {
             intPose = isBlue ? positions.startBlueClosePos: positions.startRedClosePos;
             double multipler = isBlue ? 1 : -1;
             TrajectorySequenceBuilder unfinishedMiddle = drive.trajectorySequenceBuilder(intPose)
-                    .lineTo(new Vector2d(10.2, 33.5 * multiplier))
-                    .addDisplacementMarker(intakeUp)
-                    .lineTo(new Vector2d(10.2, 40 * multiplier))
-                    .addDisplacementMarker(slideUp)
-                    .splineToLinearHeading(new Pose2d(52.5, 33 * multiplier, 0), 0)
+                    .addTemporalMarker(intakeUp)
+
+                    .lineTo(new Vector2d(10.2, 55 * multiplier))
+                    .lineTo(new Vector2d(25, 45 * multiplier))
+                    .splineToLinearHeading(new Pose2d(32, 30 * multiplier, Math.toRadians(0)), Math.toRadians(180))
+                    .splineToConstantHeading(new Vector2d(52.5, 41 * multiplier), 0)
 
                     .lineTo(new Vector2d(39,28 ))
                     .splineToConstantHeading(new Vector2d(30,52),Math.toRadians(110))
-                    .splineToConstantHeading(new Vector2d(0,58),Math.toRadians(180))
-                    .splineToConstantHeading(new Vector2d(-24,58),Math.toRadians(180))
+                    .splineToConstantHeading(new Vector2d(0,59),Math.toRadians(180))
+                    .splineToConstantHeading(new Vector2d(-24,59),Math.toRadians(180))
                     .splineToConstantHeading(new Vector2d(-52,50),Math.toRadians(220))
                     .splineToConstantHeading(new Vector2d(-57,35),Math.toRadians(270))
+                    .addTemporalMarker(intakePixel)
+                    .waitSeconds(1000);
+
                     ;
-            TrajectorySequenceBuilder unfinishedClose = drive.trajectorySequenceBuilder(intPose);
-            TrajectorySequenceBuilder unfinishedFar = drive.trajectorySequenceBuilder(intPose);
+            TrajectorySequenceBuilder unfinishedClose = drive.trajectorySequenceBuilder(intPose)
+                    .lineTo(new Vector2d(0,0));
+            TrajectorySequenceBuilder unfinishedFar = drive.trajectorySequenceBuilder(intPose)
+                    .lineTo(new Vector2d(0,0));
 
 
-
-            trajectoryMiddle = drive.trajectorySequenceBuilder(positions.startRedFarPos).build();
-            trajectoryClose = drive.trajectorySequenceBuilder(positions.startRedFarPos).build();
-            trajectoryFar = drive.trajectorySequenceBuilder(positions.startRedFarPos).build();
+            trajectoryMiddle = unfinishedMiddle.build();
+            trajectoryClose = unfinishedClose.build();
+            trajectoryFar = unfinishedFar.build();
         } else {
             intPose = isBlue ? positions.startBlueFarPos : positions.startRedFarPos;
             double multipler = isBlue ? 1 : -1;
@@ -365,10 +380,12 @@ public class Auto extends LinearOpMode {
 
 
         }
+        telemetry.addData("You need to wait", "Fam");
+        telemetry.update();
         //Sets up the Trajectories the sleep
         //is to ensure that the camera works
-        drive.setPoseEstimate(intPose);
         setupTrajectories();
+        drive.setPoseEstimate(intPose);
         sleep(6000);
 
         // region Initialize Servos

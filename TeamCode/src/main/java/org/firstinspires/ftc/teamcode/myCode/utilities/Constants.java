@@ -31,7 +31,7 @@ public class Constants {
     // endregion
     //LaunchPlane
     public static double triggerLaunch = 0;
-    public static double planeRotateLaunch = .25;
+    public static double planeRotateLaunch = .35;
     public static double planeLockLaunch = .2;
     //StorePlane
     public static double triggerStore = 0.4;
