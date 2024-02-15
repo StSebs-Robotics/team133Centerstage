@@ -59,13 +59,13 @@ public class Auto extends LinearOpMode {
     private boolean doneSetup = false;
     private boolean isBlue = true;
     private boolean isClose = true;
-    private boolean parkLeft = false;
+    private boolean parkWall = false;
     private boolean morePixels = true;
     private boolean throughTruss = false;
 
     private boolean isRed = !isBlue;
     private boolean isFar = !isClose;
-    private boolean parkRight = !parkLeft;
+    private boolean parkMiddle = !parkWall;
     //endregion
 
     // region Trajectories
@@ -282,30 +282,53 @@ public class Auto extends LinearOpMode {
         positions = new Positions(isRed);
 
         if (isClose) {
-            intPose = isBlue ? positions.startBlueClosePos: positions.startRedClosePos;
+            intPose = isBlue ? positions.startBlueClosePos : positions.startRedClosePos;
             double multipler = isBlue ? 1 : -1;
             TrajectorySequenceBuilder unfinishedMiddle = drive.trajectorySequenceBuilder(intPose)
-                    .addTemporalMarker(intakeUp)
-
+                    .lineTo(new Vector2d(10.2, 33.5 * multiplier))
+                    .addDisplacementMarker(intakeUp)
+                    .lineTo(new Vector2d(10.2, 40 * multiplier))
+                    .addDisplacementMarker(slideUp)
+                    .splineToLinearHeading(positions.dropMiddlePos, 0);
+            TrajectorySequenceBuilder unfinishedClose = drive.trajectorySequenceBuilder(intPose)
+                    .lineTo(new Vector2d(10.2, 55 * multiplier))
+                    .lineTo(new Vector2d(20, 45 * multiplier))
+                    .splineToLinearHeading(new Pose2d(10, 30 * multiplier, Math.toRadians(0)), Math.toRadians(180))
+                    .addDisplacementMarker(intakeUp)
+                    .addDisplacementMarker(slideUp)
+                    .splineToConstantHeading(positions.dropClosePos.vec(), 0);
+            TrajectorySequenceBuilder unfinishedFar = drive.trajectorySequenceBuilder(intPose)
                     .lineTo(new Vector2d(10.2, 55 * multiplier))
                     .lineTo(new Vector2d(25, 45 * multiplier))
+                    .addDisplacementMarker(intakeUp)
                     .splineToLinearHeading(new Pose2d(32, 30 * multiplier, Math.toRadians(0)), Math.toRadians(180))
-                    .splineToConstantHeading(new Vector2d(52.5, 41 * multiplier), 0)
+                    .addDisplacementMarker(slideUp)
+                    .splineToConstantHeading(positions.dropFarPos.vec(), 0);
+            if (morePixels) {
 
-                    .lineTo(new Vector2d(39,28 ))
-                    .splineToConstantHeading(new Vector2d(30,52),Math.toRadians(110))
-                    .splineToConstantHeading(new Vector2d(0,59),Math.toRadians(180))
-                    .splineToConstantHeading(new Vector2d(-24,59),Math.toRadians(180))
-                    .splineToConstantHeading(new Vector2d(-52,50),Math.toRadians(220))
-                    .splineToConstantHeading(new Vector2d(-57,35),Math.toRadians(270))
-                    .addTemporalMarker(intakePixel)
-                    .waitSeconds(1000);
+            }
+            if (parkWall) {
+                unfinishedMiddle = unfinishedMiddle.lineTo(new Vector2d(40, 30 * multiplier))
+                        .splineToConstantHeading(new Vector2d(47, 60 * multiplier), Math.toRadians(45))
+                        .splineToConstantHeading(new Vector2d(58, 62 * multiplier), Math.toRadians(0));
+                unfinishedClose = unfinishedClose.lineTo(new Vector2d(40, 30 * multiplier))
+                        .splineToConstantHeading(new Vector2d(47, 60 * multiplier), Math.toRadians(45))
+                        .splineToConstantHeading(new Vector2d(58, 62 * multiplier), Math.toRadians(0));
+                unfinishedFar = unfinishedFar.lineTo(new Vector2d(40, 30 * multiplier))
+                        .splineToConstantHeading(new Vector2d(47, 60 * multiplier), Math.toRadians(45))
+                        .splineToConstantHeading(new Vector2d(58, 62 * multiplier), Math.toRadians(0));
+            } else {
+                unfinishedMiddle = unfinishedMiddle.lineTo(new Vector2d(40, 30 * multiplier))
+                        .splineToConstantHeading(new Vector2d(47, 60 * multiplier), Math.toRadians(45))
+                        .splineToConstantHeading(new Vector2d(58, 62 * multiplier), Math.toRadians(0));
+                unfinishedClose = unfinishedClose.lineTo(new Vector2d(40, 30 * multiplier))
+                        .splineToConstantHeading(new Vector2d(47, 60 * multiplier), Math.toRadians(45))
+                        .splineToConstantHeading(new Vector2d(58, 62 * multiplier), Math.toRadians(0));
+                unfinishedFar = unfinishedFar.lineTo(new Vector2d(40, 30 * multiplier))
+                        .splineToConstantHeading(new Vector2d(47, 60 * multiplier), Math.toRadians(45))
+                        .splineToConstantHeading(new Vector2d(58, 62 * multiplier), Math.toRadians(0));
 
-                    ;
-            TrajectorySequenceBuilder unfinishedClose = drive.trajectorySequenceBuilder(intPose)
-                    .lineTo(new Vector2d(0,0));
-            TrajectorySequenceBuilder unfinishedFar = drive.trajectorySequenceBuilder(intPose)
-                    .lineTo(new Vector2d(0,0));
+            }
 
 
             trajectoryMiddle = unfinishedMiddle.build();
@@ -315,21 +338,21 @@ public class Auto extends LinearOpMode {
             intPose = isBlue ? positions.startBlueFarPos : positions.startRedFarPos;
             double multipler = isBlue ? 1 : -1;
             TrajectorySequenceBuilder unfinishedMiddle = drive.trajectorySequenceBuilder(intPose);
-                    //Liam this is where i added code
+            //Liam this is where i added code
 
             TrajectorySequenceBuilder unfinishedClose = drive.trajectorySequenceBuilder(intPose);
             TrajectorySequenceBuilder unfinishedFar = drive.trajectorySequenceBuilder(intPose);
 
 
-
-
-            trajectoryMiddle =unfinishedMiddle.build();
+            trajectoryMiddle = unfinishedMiddle.build();
             trajectoryClose = unfinishedClose.build();
             trajectoryFar = unfinishedFar.build();
 
         }
 
-    };
+    }
+
+    ;
 
     @Override
     public void runOpMode() {
@@ -351,8 +374,8 @@ public class Auto extends LinearOpMode {
             }
             //toggle for is park left
             if (currentGamepad1.square && !previousGamepad1.square) {
-                parkLeft = !parkLeft;
-                parkRight = !parkLeft;
+                parkWall = !parkWall;
+                parkMiddle = !parkWall;
             }
 
             //toggle for is through truss
@@ -372,7 +395,7 @@ public class Auto extends LinearOpMode {
             //telemetry
             telemetry.addData("(Δ) We are on alliance", isBlue ? "blue" : "red");
             telemetry.addData("(○) We are starting ", isClose ? "close" : "far");
-            telemetry.addData("(□) We will Park", parkLeft ? "left" : "right");
+            telemetry.addData("(□) We will Park near", parkWall ? "wall" : "middle");
             telemetry.addData("(×) We will go through the", throughTruss ? "truss" : "gate");
             telemetry.addData("(Dpad Up) We will Grab", morePixels ? "extra pixels" : "we will not grab extra pixels");
             telemetry.addData("Press both triggers to start", "");
@@ -417,7 +440,6 @@ public class Auto extends LinearOpMode {
             sleep(10000);
         }
     }
-
 
 
 }
