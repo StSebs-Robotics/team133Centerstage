@@ -1,4 +1,4 @@
-## FTC ST. Sebs 2023-2024
+## FTC StSebs 2023-2024
 
 ## NOTICE
 
