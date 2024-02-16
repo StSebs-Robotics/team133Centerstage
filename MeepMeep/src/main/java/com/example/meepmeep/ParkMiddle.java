@@ -6,7 +6,8 @@ import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
-public class Park {
+public class ParkMiddle {
+    protected int multiplier = 1;
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(800);
 
@@ -14,12 +15,13 @@ public class Park {
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive ->
-                        //Start Positions: 28, 33, 41
-                        drive.trajectorySequenceBuilder(new Pose2d(52.5,41 ,0))
+                        //other start positions : 28, 33, 41
+                        drive.trajectorySequenceBuilder(new Pose2d(52.5, 41, Math.toRadians(0)))
                                 .back(2)
-                                .lineTo( new Vector2d(50.5,53))
-                                .splineToConstantHeading(new Vector2d(60, 56), Math.toRadians(0))
-                                //.splineToConstantHeading(new Vector2d(58, 62), Math.toRadians(0))
+                                .lineTo(new Vector2d (51,16 ))
+                                //Have the option to use lines or splines (I think Lines are faster)
+                                //.splineToConstantHeading(new Vector2d(45.5,18 * multiplier),Math.toRadians(300))
+                                .splineToConstantHeading(new Vector2d(65,12 ),Math.toRadians(350))
                                 .build()
                 );
 

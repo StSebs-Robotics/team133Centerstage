@@ -29,29 +29,29 @@ import java.util.TimerTask;
 @Autonomous(name = "AutoV3", group = "133")
 public class Auto extends LinearOpMode {
     // region Servo Variables Definitions
-    protected Servo intakeRotate;
-    protected Servo dump;
-    protected Servo plane;
-    protected Servo planeLock;
-    protected Servo planeRotate;
+    private Servo intakeRotate;
+    private Servo dump;
+    private Servo plane;
+    private Servo planeLock;
+    private Servo planeRotate;
     private Servo frontClaw;
     private Servo backClaw;
     private CRServo intakeStage2;
     // endregion
 
     // region Motors Variables Definitions
-    protected DcMotor leftSlide;
-    protected DcMotor rightSlide;
-    protected DcMotor intake;
+    private DcMotor leftSlide;
+    private DcMotor rightSlide;
+    private DcMotor intake;
     // endregion
 
     // region Camera Variables Definitions
-    protected TfodProcessor tfod;
-    protected String whereIsTeamElement = "left";
-    protected static final boolean USE_WEBCAM = true;
-    protected static final String TFOD_MODEL_ASSET = "teamElement.tflite";
-    protected static final String[] LABELS = {"blue", "red"};
-    protected VisionPortal visionPortal;
+    private TfodProcessor tfod;
+    private String whereIsTeamElement = "left";
+    private static final boolean USE_WEBCAM = true;
+    private static final String TFOD_MODEL_ASSET = "teamElement.tflite";
+    private static final String[] LABELS = {"blue", "red"};
+    private VisionPortal visionPortal;
     // endregion
 
     //region Boolean Variables Definitions
@@ -69,19 +69,19 @@ public class Auto extends LinearOpMode {
     //endregion
 
     // region Trajectories
-    protected int multiplier = 1;
-    protected MarkerCallback intakeUp;
-    protected MarkerCallback intake1Pixel;
-    protected MarkerCallback intake2Pixel;
-    protected MarkerCallback slideUp;
-    protected MarkerCallback slideUp2;
-    protected double angleAdjust = 0;
-    protected Pose2d intPose;
+    private int multiplier = 1;
+    private MarkerCallback intakeUp;
+    private MarkerCallback intake1Pixel;
+    private MarkerCallback intake2Pixel;
+    private MarkerCallback slideUp;
+    private MarkerCallback slideUp2;
+    private double angleAdjust = 0;
+    private Pose2d intPose;
 
-    protected SampleMecanumDrive drive;
-    protected TrajectorySequence trajectoryClose;
-    protected TrajectorySequence trajectoryMiddle;
-    protected TrajectorySequence trajectoryFar;
+    private SampleMecanumDrive drive;
+    private TrajectorySequence trajectoryClose;
+    private TrajectorySequence trajectoryMiddle;
+    private TrajectorySequence trajectoryFar;
     Positions positions;
 
     // endregion
@@ -92,7 +92,7 @@ public class Auto extends LinearOpMode {
     // endregion
 
     //grabs the hardware for motors/servos/etc
-    protected void getHardware() {
+    private void getHardware() {
         // region Servo Hardware
         intakeRotate = hardwareMap.servo.get("intakerotate");
         dump = hardwareMap.servo.get("dump");
@@ -122,7 +122,7 @@ public class Auto extends LinearOpMode {
     }
 
     // creates camera recognition
-    protected void initTfod() {
+    private void initTfod() {
         tfod = new TfodProcessor.Builder().setModelAssetName(TFOD_MODEL_ASSET)
                 .setModelLabels(LABELS)
                 .build();
@@ -145,7 +145,7 @@ public class Auto extends LinearOpMode {
     }
 
     //this function does all the heavy lifting for the team element recognition
-    protected void readTeamElement() {
+    private void readTeamElement() {
 
         List<Recognition> currentRecognitions = tfod.getRecognitions();
         telemetry.addData("# Objects Detected", currentRecognitions.size());
@@ -165,7 +165,7 @@ public class Auto extends LinearOpMode {
     }
 
     //This function takes the position of the team element and sets the where is team element variable
-    protected void returnLocation(double position) {
+    private void returnLocation(double position) {
         if ((isBlue && isClose) || (isRed && isFar)) {
 
             if (isBlue) {
@@ -203,9 +203,11 @@ public class Auto extends LinearOpMode {
         }
         telemetry.update();
     }
+    
+    
 
     //function that moves the slides to a set position at a given speed
-    protected void moveSlides(int position, double velocity) {
+    private void moveSlides(int position, double velocity) {
         leftSlide.setTargetPosition(position);
         rightSlide.setTargetPosition(position);
 
@@ -217,7 +219,7 @@ public class Auto extends LinearOpMode {
     }
 
     //creates the trajectories and other stuff for paths
-    protected void setupTrajectories() {
+    private void setupTrajectories() {
         intakeUp = () -> {
             intakeRotate.setPosition(Constants.intakeUp);
         };
@@ -278,55 +280,83 @@ public class Auto extends LinearOpMode {
             intakeRotate.setPosition(Constants.intakeUp);
             sleep(500);
         };
+        MarkerCallback dropPixels = () -> {
+            frontClaw.setPosition(Constants.frontClawOpen);
+            backClaw.setPosition(Constants.backClawOpen);
+            sleep(100);
+            dump.setPosition(Constants.dumpDown);
+            sleep(200);
+            moveSlides(0, 1);
+        };
 
         positions = new Positions(isRed);
 
         if (isClose) {
             intPose = isBlue ? positions.startBlueClosePos : positions.startRedClosePos;
-            double multipler = isBlue ? 1 : -1;
+            multiplier = isBlue ? 1 : -1;
             TrajectorySequenceBuilder unfinishedMiddle = drive.trajectorySequenceBuilder(intPose)
                     .lineTo(new Vector2d(10.2, 33.5 * multiplier))
                     .addDisplacementMarker(intakeUp)
                     .lineTo(new Vector2d(10.2, 40 * multiplier))
                     .addDisplacementMarker(slideUp)
-                    .splineToLinearHeading(positions.dropMiddlePos, 0);
+                    .splineToLinearHeading(positions.dropMiddlePos, 0)
+                    .addTemporalMarker(dropPixels)
+                    .waitSeconds(.15);
             TrajectorySequenceBuilder unfinishedClose = drive.trajectorySequenceBuilder(intPose)
                     .lineTo(new Vector2d(10.2, 55 * multiplier))
                     .lineTo(new Vector2d(20, 45 * multiplier))
                     .splineToLinearHeading(new Pose2d(10, 30 * multiplier, Math.toRadians(0)), Math.toRadians(180))
                     .addDisplacementMarker(intakeUp)
                     .addDisplacementMarker(slideUp)
-                    .splineToConstantHeading(positions.dropClosePos.vec(), 0);
+                    .splineToConstantHeading(positions.dropClosePos.vec(), 0)
+                    .addTemporalMarker(dropPixels)
+                    .waitSeconds(.15);
             TrajectorySequenceBuilder unfinishedFar = drive.trajectorySequenceBuilder(intPose)
                     .lineTo(new Vector2d(10.2, 55 * multiplier))
                     .lineTo(new Vector2d(25, 45 * multiplier))
                     .addDisplacementMarker(intakeUp)
                     .splineToLinearHeading(new Pose2d(32, 30 * multiplier, Math.toRadians(0)), Math.toRadians(180))
                     .addDisplacementMarker(slideUp)
-                    .splineToConstantHeading(positions.dropFarPos.vec(), 0);
+                    .splineToConstantHeading(positions.dropFarPos.vec(), 0)
+                    .addTemporalMarker(dropPixels)
+                    .waitSeconds(.15);
+
             if (morePixels) {
 
             }
             if (parkWall) {
-                unfinishedMiddle = unfinishedMiddle.lineTo(new Vector2d(40, 30 * multiplier))
-                        .splineToConstantHeading(new Vector2d(47, 60 * multiplier), Math.toRadians(45))
-                        .splineToConstantHeading(new Vector2d(58, 62 * multiplier), Math.toRadians(0));
-                unfinishedClose = unfinishedClose.lineTo(new Vector2d(40, 30 * multiplier))
-                        .splineToConstantHeading(new Vector2d(47, 60 * multiplier), Math.toRadians(45))
-                        .splineToConstantHeading(new Vector2d(58, 62 * multiplier), Math.toRadians(0));
-                unfinishedFar = unfinishedFar.lineTo(new Vector2d(40, 30 * multiplier))
-                        .splineToConstantHeading(new Vector2d(47, 60 * multiplier), Math.toRadians(45))
-                        .splineToConstantHeading(new Vector2d(58, 62 * multiplier), Math.toRadians(0));
+                unfinishedMiddle = unfinishedMiddle
+                        .back(2)
+                        .lineTo( new Vector2d(50.5,53 * multiplier))
+                        .splineToConstantHeading(new Vector2d(60, 56 * multiplier), Math.toRadians(0));
+                unfinishedClose = unfinishedClose
+                        .back(2)
+                        .lineTo( new Vector2d(50.5,53 * multiplier))
+                        .splineToConstantHeading(new Vector2d(60, 56 * multiplier), Math.toRadians(0));
+                unfinishedFar = unfinishedFar
+                        .back(2)
+                        .lineTo( new Vector2d(50.5,53 * multiplier))
+                        .splineToConstantHeading(new Vector2d(60, 56 * multiplier), Math.toRadians(0));
             } else {
-                unfinishedMiddle = unfinishedMiddle.lineTo(new Vector2d(40, 30 * multiplier))
-                        .splineToConstantHeading(new Vector2d(47, 60 * multiplier), Math.toRadians(45))
-                        .splineToConstantHeading(new Vector2d(58, 62 * multiplier), Math.toRadians(0));
-                unfinishedClose = unfinishedClose.lineTo(new Vector2d(40, 30 * multiplier))
-                        .splineToConstantHeading(new Vector2d(47, 60 * multiplier), Math.toRadians(45))
-                        .splineToConstantHeading(new Vector2d(58, 62 * multiplier), Math.toRadians(0));
-                unfinishedFar = unfinishedFar.lineTo(new Vector2d(40, 30 * multiplier))
-                        .splineToConstantHeading(new Vector2d(47, 60 * multiplier), Math.toRadians(45))
-                        .splineToConstantHeading(new Vector2d(58, 62 * multiplier), Math.toRadians(0));
+                unfinishedMiddle = unfinishedMiddle
+                        .back(2)
+                        .lineTo(new Vector2d (51,16 * multiplier))
+                        //Have the option to use lines or splines (I think Lines are faster)
+                        //.splineToConstantHeading(new Vector2d(45.5,18 * multiplier),Math.toRadians(300))
+                        .splineToConstantHeading(new Vector2d(65,12 * multiplier),Math.toRadians(350));
+
+                unfinishedClose = unfinishedClose
+                        .back(2)
+                        .lineTo(new Vector2d (51,16 * multiplier))
+                        //Have the option to use lines or splines (I think Lines are faster)
+                        //.splineToConstantHeading(new Vector2d(45.5,18 * multiplier),Math.toRadians(300))
+                        .splineToConstantHeading(new Vector2d(65,12 * multiplier),Math.toRadians(350));
+                unfinishedFar = unfinishedFar
+                        .back(2)
+                        .lineTo(new Vector2d (51,16 * multiplier))
+                        //Have the option to use lines or splines (I think Lines are faster)
+                        //.splineToConstantHeading(new Vector2d(45.5,18 * multiplier),Math.toRadians(300))
+                        .splineToConstantHeading(new Vector2d(65,12 * multiplier),Math.toRadians(350));
 
             }
 
@@ -336,10 +366,8 @@ public class Auto extends LinearOpMode {
             trajectoryFar = unfinishedFar.build();
         } else {
             intPose = isBlue ? positions.startBlueFarPos : positions.startRedFarPos;
-            double multipler = isBlue ? 1 : -1;
+            multiplier = isBlue ? 1 : -1;
             TrajectorySequenceBuilder unfinishedMiddle = drive.trajectorySequenceBuilder(intPose);
-            //Liam this is where i added code
-
             TrajectorySequenceBuilder unfinishedClose = drive.trajectorySequenceBuilder(intPose);
             TrajectorySequenceBuilder unfinishedFar = drive.trajectorySequenceBuilder(intPose);
 
