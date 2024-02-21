@@ -163,7 +163,7 @@ public class Teleop extends LinearOpMode {
 
                 drive.setWeightedDrivePower(new Pose2d(input.getX(), input.getY(), -currentGamepad1.right_stick_x));
 
-                if (currentGamepad1.options) {
+                if (currentGamepad2.options && !previousGamepad2.options) {
                     if (yMultiplier == 1) {
                         yMultiplier = -1;
                     } else {
@@ -187,10 +187,11 @@ public class Teleop extends LinearOpMode {
                     intakeRotate.setPosition(Constants.intakeUp);
                 }
                 // Resets the position {Home Button}
-                if (currentGamepad1.ps) {
+                if (currentGamepad2.ps && !previousGamepad2.ps) {
                     imu.resetYaw();
                     drive.setPoseEstimate(new Pose2d(0, 0, 0));
-                    currentGamepad1.rumble(200);
+                    gamepad1.rumble(200);
+                    gamepad1.setLedColor(1,1,1,1000);
                 }
 
                 if (currentGamepad1.triangle) {
