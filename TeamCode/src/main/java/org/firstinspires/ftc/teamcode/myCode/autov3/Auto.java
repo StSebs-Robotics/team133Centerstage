@@ -203,8 +203,8 @@ public class Auto extends LinearOpMode {
         }
         telemetry.update();
     }
-    
-    
+
+
 
     //function that moves the slides to a set position at a given speed
     private void moveSlides(int position, double velocity) {
@@ -240,18 +240,11 @@ public class Auto extends LinearOpMode {
             intake.setPower(1);
             intakeStage2.setPower(-1);
             intakeRotate.setPosition(Constants.intakePickupStack5);
-            new Timer().schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    intakeRotate.setPosition(Constants.intakePickupStack4);
-                }
-            }, 1000L);
-            new Timer().schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    intakeRotate.setPosition(Constants.intakeUp);
-                }
-            }, 1750L);
+            sleep(1000);
+            intakeRotate.setPosition(Constants.intakePickupStack4);
+            sleep(750);
+            intakeRotate.setPosition(Constants.intakeUp);
+            sleep(500);
         };
         slideUp = () -> {
             moveSlides(1100, 1);
@@ -270,16 +263,6 @@ public class Auto extends LinearOpMode {
                 }
             }, 200L);
         };
-        MarkerCallback intakePixel = () -> {
-            intake.setPower(1);
-            intakeStage2.setPower(-1);
-            intakeRotate.setPosition(Constants.intakePickupStack5);
-            sleep(1000);
-            intakeRotate.setPosition(Constants.intakePickupStack4);
-            sleep(750);
-            intakeRotate.setPosition(Constants.intakeUp);
-            sleep(500);
-        };
         MarkerCallback dropPixels = () -> {
             frontClaw.setPosition(Constants.frontClawOpen);
             backClaw.setPosition(Constants.backClawOpen);
@@ -288,75 +271,215 @@ public class Auto extends LinearOpMode {
             sleep(200);
             moveSlides(0, 1);
         };
+        MarkerCallback intakeOff = () -> {
+            intake.setPower(0);
+            intakeStage2.setPower(0);
+        };
 
         positions = new Positions(isRed);
 
         if (isClose) {
             intPose = isBlue ? positions.startBlueClosePos : positions.startRedClosePos;
+            telemetry.addData("test", intPose);
+            telemetry.update();
             multiplier = isBlue ? 1 : -1;
             TrajectorySequenceBuilder unfinishedMiddle = drive.trajectorySequenceBuilder(intPose)
-                    .lineTo(new Vector2d(10.2, 33.5 * multiplier))
-                    .addDisplacementMarker(intakeUp)
-                    .lineTo(new Vector2d(10.2, 40 * multiplier))
-                    .addDisplacementMarker(slideUp)
-                    .splineToLinearHeading(positions.dropMiddlePos, 0)
+//                    .lineTo(new Vector2d(10.2, 33.5 * multiplier))
+//                    .addTemporalMarker(intakeUp)
+//                    .lineTo(new Vector2d(10.2, 40 * multiplier))
+//                    .addTemporalMarker(slideUp)
+//                    .splineToLinearHeading(positions.dropMiddlePos,0)
+                    .setTangent(Math.toRadians(270))
+                    .splineTo(new Vector2d(10.2,35 * multiplier), Math.toRadians(270))
+                    .addTemporalMarker(intakeUp)
+                    .addTemporalMarker(slideUp)
+                    .lineToSplineHeading(new Pose2d(30, 33 * multiplier, Math.toRadians(0)))
+                    //Liam did I do this right
+                    .splineToConstantHeading(positions.dropMiddlePos.vec(),0)
                     .addTemporalMarker(dropPixels)
-                    .waitSeconds(.15);
+                    .waitSeconds(.3);
             TrajectorySequenceBuilder unfinishedClose = drive.trajectorySequenceBuilder(intPose)
-                    .lineTo(new Vector2d(10.2, 55 * multiplier))
-                    .lineTo(new Vector2d(20, 45 * multiplier))
-                    .splineToLinearHeading(new Pose2d(10, 30 * multiplier, Math.toRadians(0)), Math.toRadians(180))
-                    .addDisplacementMarker(intakeUp)
-                    .addDisplacementMarker(slideUp)
-                    .splineToConstantHeading(positions.dropClosePos.vec(), 0)
+//                    .lineTo(new Vector2d(10.2, 55 * multiplier))
+//                    .lineTo(new Vector2d(20, 45 * multiplier))
+//                    .splineToLinearHeading(new Pose2d(10, 30 * multiplier, Math.toRadians(0)), Math.toRadians(180))
+//                    .addTemporalMarker(intakeUp)
+//                    .addTemporalMarker(slideUp)
+//                    .splineToConstantHeading(positions.dropClosePos.vec(), 0)
+
+                    .setTangent(Math.toRadians(270))
+                    .splineTo(new Vector2d(10,45 * multiplier), Math.toRadians(270))
+                    .splineTo(new Vector2d(7,38 * multiplier), Math.toRadians(225))
+                    .addTemporalMarker(intakeUp)
+                    .lineToSplineHeading(new Pose2d(20, 30 * multiplier, Math.toRadians(0)))
+                    .splineToConstantHeading(positions.dropClosePos.vec(), Math.toRadians(0))
                     .addTemporalMarker(dropPixels)
-                    .waitSeconds(.15);
+                    .waitSeconds(.3);
             TrajectorySequenceBuilder unfinishedFar = drive.trajectorySequenceBuilder(intPose)
-                    .lineTo(new Vector2d(10.2, 55 * multiplier))
-                    .lineTo(new Vector2d(25, 45 * multiplier))
-                    .addDisplacementMarker(intakeUp)
-                    .splineToLinearHeading(new Pose2d(32, 30 * multiplier, Math.toRadians(0)), Math.toRadians(180))
-                    .addDisplacementMarker(slideUp)
-                    .splineToConstantHeading(positions.dropFarPos.vec(), 0)
+//                    .lineTo(new Vector2d(10.2, 55 * multiplier))
+//                    .lineTo(new Vector2d(25, 45 * multiplier))
+//                    .addTemporalMarker(intakeUp)
+//                    .splineToLinearHeading(new Pose2d(32, 30 * multiplier, Math.toRadians(0)), Math.toRadians(180))
+//                    .addTemporalMarker(slideUp)
+//                    .splineToConstantHeading(positions.dropFarPos.vec(), 0)
+                    .setTangent(270)
+                    .splineToConstantHeading(new Vector2d(22,42),Math.toRadians(270))
+                    .addTemporalMarker(intakeUp)
+                    .addTemporalMarker(slideUp)
+                    .splineToLinearHeading(positions.dropFarPos,0)
                     .addTemporalMarker(dropPixels)
-                    .waitSeconds(.15);
+                    .waitSeconds(.3);
+
 
             if (morePixels) {
+                if (throughTruss) {
+                    unfinishedMiddle = unfinishedMiddle
+                            .back(2)
+                            .splineToConstantHeading(new Vector2d(30,52 * multiplier),Math.toRadians(110))
+                            .splineToConstantHeading(new Vector2d(0,59* multiplier),Math.toRadians(180))
+                            .splineToConstantHeading(new Vector2d(-24,59* multiplier),Math.toRadians(180))
+                            .splineToConstantHeading(new Vector2d(-52,50* multiplier),Math.toRadians(220))
+                            .splineToConstantHeading(new Vector2d(-57,35* multiplier),Math.toRadians(270))
+                            .addTemporalMarker(intake2Pixel)
+                            .waitSeconds(1.250)
+                            //GO Pack
+                            .lineTo(new Vector2d(-56,39* multiplier))
+                            .splineToConstantHeading(new Vector2d(-51,48* multiplier),Math.toRadians(45))
+                            .splineToConstantHeading(new Vector2d(-23,60* multiplier),Math.toRadians(0))
+                            .splineToConstantHeading(new Vector2d(0,60* multiplier),Math.toRadians(0))
+                            .addTemporalMarker(slideUp2)
+                            .addTemporalMarker(intakeOff)
+                            .splineToConstantHeading(positions.dropMiddlePos.vec().plus(new Vector2d(0,-2.5)),Math.toRadians(0))
+                            .addTemporalMarker(dropPixels)
+                    ;
 
+                    unfinishedClose = unfinishedClose
+                            .back(2)
+                            .splineToConstantHeading(new Vector2d(30,52),Math.toRadians(110))
+                            .splineToConstantHeading(new Vector2d(0,59),Math.toRadians(180))
+                            .splineToConstantHeading(new Vector2d(-24,59),Math.toRadians(180))
+                            .splineToConstantHeading(new Vector2d(-52,50),Math.toRadians(220))
+                            .splineToConstantHeading(new Vector2d(-57,35),Math.toRadians(270))
+                            .addTemporalMarker(intake2Pixel)
+                            .waitSeconds(1.250)
+                            //GO Back
+                            .lineTo(new Vector2d(-56,39* multiplier))
+                            .splineToConstantHeading(new Vector2d(-51,48* multiplier),Math.toRadians(45))
+                            .splineToConstantHeading(new Vector2d(-23,60* multiplier),Math.toRadians(0))
+                            .splineToConstantHeading(new Vector2d(0,60* multiplier),Math.toRadians(0))
+                            .addTemporalMarker(slideUp2)
+                            .addTemporalMarker(intakeOff)
+                            .splineToConstantHeading(positions.dropClosePos.vec().plus(new Vector2d(0,2.5)),Math.toRadians(0))
+                            .addTemporalMarker(dropPixels)
+                    ;
+
+                    unfinishedFar = unfinishedFar
+                            .back(2)
+                            .splineToConstantHeading(new Vector2d(30,52),Math.toRadians(110))
+                            .splineToConstantHeading(new Vector2d(0,59),Math.toRadians(180))
+                            .splineToConstantHeading(new Vector2d(-24,59),Math.toRadians(180))
+                            .splineToConstantHeading(new Vector2d(-52,50),Math.toRadians(220))
+                            .splineToConstantHeading(new Vector2d(-57,35),Math.toRadians(270))
+                            .addTemporalMarker(intake2Pixel)
+                            .waitSeconds(1.250)
+                            //GO Back
+                            .lineTo(new Vector2d(-56,39* multiplier))
+                            .splineToConstantHeading(new Vector2d(-51,48* multiplier),Math.toRadians(45))
+                            .splineToConstantHeading(new Vector2d(-23,60* multiplier),Math.toRadians(0))
+                            .splineToConstantHeading(new Vector2d(0,60* multiplier),Math.toRadians(0))
+                            .addTemporalMarker(slideUp2)
+                            .addTemporalMarker(intakeOff)
+                            .splineToConstantHeading(positions.dropFarPos.vec().plus(new Vector2d(0,-2.5)),Math.toRadians(0))
+                            .addTemporalMarker(dropPixels)
+                     ;
+                } else {
+                    unfinishedMiddle = unfinishedMiddle
+                            .lineTo( new Vector2d(39,23* multiplier))
+                            .splineToConstantHeading(new Vector2d(32, 10.6* multiplier), Math.toRadians(200))
+                            .splineToConstantHeading(new Vector2d(1,15* multiplier),Math.toRadians(180))
+                            .splineToConstantHeading(positions.stack3Pos.vec(),Math.toRadians(180))
+                            .addTemporalMarker(intake2Pixel)
+                            .waitSeconds(1.250)
+                            //Go back
+                            .setTangent(0)
+                            .splineToConstantHeading(new Vector2d(-34,13 * multiplier),Math.toRadians(350))
+                            .splineToConstantHeading(new Vector2d(0,13* multiplier),Math.toRadians(0))
+                            .addTemporalMarker(slideUp2)
+                            .splineToConstantHeading(new Vector2d(36,13* multiplier),Math.toRadians(0))
+                            .addTemporalMarker(intakeOff)
+                            .splineToConstantHeading(positions.dropMiddlePos.vec().plus(new Vector2d(0,-2.5)),Math.toRadians(45))
+                            .addTemporalMarker(dropPixels)
+                    ;
+
+                    unfinishedClose = unfinishedClose
+                            .lineTo( new Vector2d(39,23* multiplier))
+                            .splineToConstantHeading(new Vector2d(32, 10.6* multiplier), Math.toRadians(200))
+                            .splineToConstantHeading(new Vector2d(1,15* multiplier),Math.toRadians(180))
+                            .splineToConstantHeading(positions.stack3Pos.vec(),Math.toRadians(180))
+                            .addTemporalMarker(intake2Pixel)
+                            .waitSeconds(1.250)
+                            //Go Back
+                            .setTangent(0)
+                            .splineToConstantHeading(new Vector2d(-34,13 * multiplier),Math.toRadians(350))
+                            .splineToConstantHeading(new Vector2d(0,13* multiplier),Math.toRadians(0))
+                            .addTemporalMarker(slideUp2)
+                            .splineToConstantHeading(new Vector2d(36,13* multiplier),Math.toRadians(0))
+                            .addTemporalMarker(intakeOff)
+                            .splineToConstantHeading(positions.dropClosePos.vec().plus(new Vector2d(0,2.5)),Math.toRadians(45))
+                            .addTemporalMarker(dropPixels)
+                    ;
+
+                    unfinishedFar = unfinishedFar
+                            .lineTo( new Vector2d(39,23* multiplier))
+                            .splineToConstantHeading(new Vector2d(32, 10.6* multiplier), Math.toRadians(200))
+                            .splineToConstantHeading(new Vector2d(1,15* multiplier),Math.toRadians(180))
+                            .splineToConstantHeading(positions.stack3Pos.vec(),Math.toRadians(180))
+                            .addTemporalMarker(intake2Pixel)
+                            .waitSeconds(1.250)
+                            //Go Back
+                            .setTangent(0)
+                            .splineToConstantHeading(new Vector2d(-34,13 * multiplier),Math.toRadians(350))
+                            .splineToConstantHeading(new Vector2d(0,13* multiplier),Math.toRadians(0))
+                            .addTemporalMarker(slideUp2)
+                            .splineToConstantHeading(new Vector2d(36,13* multiplier),Math.toRadians(0))
+                            .addTemporalMarker(intakeOff)
+                            .splineToConstantHeading(positions.dropFarPos.vec().plus(new Vector2d(0,-2.5)),Math.toRadians(45))
+                            .addTemporalMarker(dropPixels)
+                    ;
+                }
             }
             if (parkWall) {
                 unfinishedMiddle = unfinishedMiddle
                         .back(2)
                         .lineTo( new Vector2d(50.5,53 * multiplier))
-                        .splineToConstantHeading(new Vector2d(60, 56 * multiplier), Math.toRadians(0));
+                        .splineToConstantHeading(positions.wallParkPos.vec(), Math.toRadians(0));
                 unfinishedClose = unfinishedClose
                         .back(2)
                         .lineTo( new Vector2d(50.5,53 * multiplier))
-                        .splineToConstantHeading(new Vector2d(60, 56 * multiplier), Math.toRadians(0));
+                        .splineToConstantHeading(positions.wallParkPos.vec(), Math.toRadians(0));
                 unfinishedFar = unfinishedFar
                         .back(2)
                         .lineTo( new Vector2d(50.5,53 * multiplier))
-                        .splineToConstantHeading(new Vector2d(60, 56 * multiplier), Math.toRadians(0));
+                        .splineToConstantHeading(positions.wallParkPos.vec(), Math.toRadians(0));
             } else {
                 unfinishedMiddle = unfinishedMiddle
                         .back(2)
                         .lineTo(new Vector2d (51,16 * multiplier))
                         //Have the option to use lines or splines (I think Lines are faster)
                         //.splineToConstantHeading(new Vector2d(45.5,18 * multiplier),Math.toRadians(300))
-                        .splineToConstantHeading(new Vector2d(65,12 * multiplier),Math.toRadians(350));
+                        .splineToConstantHeading(positions.middleParkPos.vec(),Math.toRadians(350));
 
                 unfinishedClose = unfinishedClose
                         .back(2)
                         .lineTo(new Vector2d (51,16 * multiplier))
                         //Have the option to use lines or splines (I think Lines are faster)
                         //.splineToConstantHeading(new Vector2d(45.5,18 * multiplier),Math.toRadians(300))
-                        .splineToConstantHeading(new Vector2d(65,12 * multiplier),Math.toRadians(350));
+                        .splineToConstantHeading(positions.middleParkPos.vec(),Math.toRadians(350));
                 unfinishedFar = unfinishedFar
                         .back(2)
                         .lineTo(new Vector2d (51,16 * multiplier))
                         //Have the option to use lines or splines (I think Lines are faster)
                         //.splineToConstantHeading(new Vector2d(45.5,18 * multiplier),Math.toRadians(300))
-                        .splineToConstantHeading(new Vector2d(65,12 * multiplier),Math.toRadians(350));
+                        .splineToConstantHeading(positions.middleParkPos.vec(),Math.toRadians(350));
 
             }
 
@@ -408,12 +531,12 @@ public class Auto extends LinearOpMode {
 
             //toggle for is through truss
             if (currentGamepad1.cross && !previousGamepad1.cross) {
-                throughTruss = !throughTruss;
+                morePixels = !morePixels;
             }
 
             //toggle for is get more pixels
             if (currentGamepad1.dpad_up && !previousGamepad1.dpad_up) {
-                morePixels = !morePixels;
+                throughTruss = !throughTruss;
             }
 
             //starts the program
@@ -424,8 +547,10 @@ public class Auto extends LinearOpMode {
             telemetry.addData("(Δ) We are on alliance", isBlue ? "blue" : "red");
             telemetry.addData("(○) We are starting ", isClose ? "close" : "far");
             telemetry.addData("(□) We will Park near", parkWall ? "wall" : "middle");
-            telemetry.addData("(×) We will go through the", throughTruss ? "truss" : "gate");
-            telemetry.addData("(Dpad Up) We will Grab", morePixels ? "extra pixels" : "we will not grab extra pixels");
+            telemetry.addData("(×) We will Grab", morePixels ? "extra pixels" : "we will not grab extra pixels");
+            if (morePixels) {
+                telemetry.addData("(Dpad Up) We will go through the", throughTruss ? "truss" : "gate");
+            }
             telemetry.addData("Press both triggers to start", "");
             telemetry.update();
 

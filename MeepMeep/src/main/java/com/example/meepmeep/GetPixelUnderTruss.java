@@ -14,8 +14,9 @@ public class GetPixelUnderTruss {
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(40, 25, Math.toRadians(0)))
-                                .lineTo(new Vector2d(39,28 ))
+                      //Other start positions: 28, 33, 41
+                        drive.trajectorySequenceBuilder(new Pose2d(52.5, 28, Math.toRadians(0)))
+                                .back(2)
                                 .splineToConstantHeading(new Vector2d(30,52),Math.toRadians(110))
                                 .splineToConstantHeading(new Vector2d(0,59),Math.toRadians(180))
                                 .splineToConstantHeading(new Vector2d(-24,59),Math.toRadians(180))

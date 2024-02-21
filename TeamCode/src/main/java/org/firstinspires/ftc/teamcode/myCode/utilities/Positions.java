@@ -24,25 +24,26 @@ public class Positions {
 
     public Positions(boolean mirror) {
         double multiplier = mirror ? -1 : 1;
-        wallParkPos = new Pose2d(61, 64 * multiplier, Math.toRadians(0));
-        middleParkPos = new Pose2d(61, 10.4 * multiplier, Math.toRadians(0));
+        double dropX = 54;
+        wallParkPos = new Pose2d(60, 62 * multiplier, Math.toRadians(0));
+        middleParkPos = new Pose2d(60,12 * multiplier, Math.toRadians(0));
 
-        stack1Pos = new Pose2d(-57, 35, Math.toRadians(180));
-        stack3Pos = new Pose2d(-58, (17.5 * multiplier) + (multiplier == 1 ? 0 : -.5), Math.toRadians(180));
+        stack1Pos = new Pose2d(-58.75,35* multiplier, Math.toRadians(180));
+        stack3Pos = new Pose2d(-58.75,17.5* multiplier, Math.toRadians(180));
 
-        dropClosePos = new Pose2d(52.5, 28 * multiplier, Math.toRadians(0));
-        dropFarPos = new Pose2d(52.5, 41 * multiplier, Math.toRadians(0));
-        dropMiddlePos = new Pose2d(52.5, 33 * multiplier, Math.toRadians(0));
+        dropClosePos = new Pose2d(dropX, 28 * multiplier, Math.toRadians(0));
+        dropFarPos = new Pose2d(dropX, 41 * multiplier, Math.toRadians(0));
+        dropMiddlePos = new Pose2d(dropX, 33 * multiplier, Math.toRadians(0));
         //these are where we drop the white pixels we might not use this
         dropOtherClosePos = new Pose2d();
         dropOtherFarPos = new Pose2d();
         dropOtherMiddlePos = new Pose2d();
         centerPos = new Pose2d();
 
-        startRedFarPos = new Pose2d(-38.1, 61 * multiplier, Math.toRadians(-90));
+        startRedFarPos = new Pose2d(-38.1, -61 * multiplier, Math.toRadians(-90));
         startRedClosePos = new Pose2d(15.75, -61 * multiplier, Math.toRadians(-90));
 
-        startBlueFarPos = new Pose2d(-33, -61 * multiplier, Math.toRadians(90));
+        startBlueFarPos = new Pose2d(-33, 61 * multiplier, Math.toRadians(90));
         startBlueClosePos = new Pose2d(12, 61 * multiplier, Math.toRadians(90));
 
     }

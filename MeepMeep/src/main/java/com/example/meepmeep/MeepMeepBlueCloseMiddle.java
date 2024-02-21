@@ -9,26 +9,17 @@ import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 public class MeepMeepBlueCloseMiddle {
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(800);
-
+        double multiplier = 1;
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(10.2,61, Math.toRadians(90)))
-                                .lineTo(new Vector2d(10.2, 60.5))
-                                .splineToConstantHeading(new Vector2d(10.2, 37), Math.toRadians(280))
-                                .splineToConstantHeading(new Vector2d(26,31),Math.toRadians(0))
-                                .lineToLinearHeading(new Pose2d(51, 35, Math.toRadians(0)))
-//                                .splineToConstantHeading(new Vector2d(29, 31), Math.toRadians(0))
-//                                .splineToLinearHeading(new Pose2d(51, 35, Math.toRadians(0)), Math.toRadians(0))
-//                                .splineTo(new Vector2d(51, 35), Math.toRadians(0))
-
-//                                .lineTo(new Vector2d(10.2, 60.5))
-//                                .splineToLinearHeading(new Pose2d(10.2, 37, Math.toRadians(90)), Math.toRadians(90))
-////                                .splineToLinearHeading(new Pose2d(26, 31, Math.toRadians(0)), Math.toRadians(0))
-////                                .splineToLinearHeading(new Pose2d(51, 35, Math.toRadians(180)), Math.toRadians(0))
-
-                                .build()
+                                drive.trajectorySequenceBuilder(new Pose2d(10.2,61, Math.toRadians(90)))
+                                        .setTangent(Math.toRadians(270))
+                                        .splineTo(new Vector2d(10.2,35 * multiplier), Math.toRadians(270))
+                                        .lineToSplineHeading(new Pose2d(30, 33 * multiplier, Math.toRadians(0)))
+                                        .splineToConstantHeading(new Vector2d(54,33),0)
+                                        .build()
                 );
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_CENTERSTAGE_JUICE_DARK)

@@ -14,8 +14,8 @@ public class ReturnFromStack3Gate {
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(-57, 35, Math.toRadians(0)))
-                                .lineTo(new Vector2d(-56.7,32))
+                        drive.trajectorySequenceBuilder(new Pose2d(-58, 34, Math.toRadians(0)))
+                                .setTangent(0)
                                 .splineToConstantHeading(new Vector2d(-52,14),Math.toRadians(340))
                                 .splineToConstantHeading(new Vector2d(0,10),Math.toRadians(0))
                                 .splineToConstantHeading(new Vector2d(32,11.5),Math.toRadians(0))
