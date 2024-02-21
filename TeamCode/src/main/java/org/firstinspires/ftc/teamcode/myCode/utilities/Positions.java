@@ -27,7 +27,7 @@ public class Positions {
         wallParkPos = new Pose2d(60, 62 * multiplier, Math.toRadians(0));
         middleParkPos = new Pose2d(60,12 * multiplier, Math.toRadians(0));
 
-        stack1Pos = new Pose2d(-58.75,35* multiplier, Math.toRadians(180));
+        stack1Pos = new Pose2d(-56.2,32.5* multiplier, Math.toRadians(180));
         stack3Pos = new Pose2d(-58.75,17.5* multiplier, Math.toRadians(180));
 
         dropClosePos = new Pose2d(dropX, 28 * multiplier, Math.toRadians(0));
@@ -39,8 +39,8 @@ public class Positions {
         dropOtherMiddlePos = new Pose2d();
         centerPos = new Pose2d();
 
-        startRedFarPos = new Pose2d(-38.1, -61 * multiplier, Math.toRadians(-90));
-        startRedClosePos = new Pose2d(15.75, -61 * multiplier, Math.toRadians(-90));
+        startRedFarPos = new Pose2d(-38.1, -61, Math.toRadians(-90));
+        startRedClosePos = new Pose2d(15.75, -61, Math.toRadians(-90));
 
         startBlueFarPos = new Pose2d(-33, 61 * multiplier, Math.toRadians(90));
         startBlueClosePos = new Pose2d(12, 61 * multiplier, Math.toRadians(90));

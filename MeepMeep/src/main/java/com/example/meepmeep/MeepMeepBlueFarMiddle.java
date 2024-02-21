@@ -15,13 +15,16 @@ public class MeepMeepBlueFarMiddle {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(new Pose2d(-38.1,61, Math.toRadians(90)))
-                                .lineTo(new Vector2d(-38.1, 33))
-                                .lineTo(new Vector2d(-38.1, 36))
-                                .splineToLinearHeading(new Pose2d(-53.19, 38,Math.toRadians(0)),Math.toRadians(-90))
-                                .lineTo(new Vector2d(-53.19, 10))
-                                .splineToConstantHeading(new Vector2d(0, 10),0)
-                                .splineToConstantHeading(new Vector2d(38, 15),0)
-                                .splineToConstantHeading(new Vector2d(47, 34),0)
+                                .splineTo(new Vector2d(-38.1, 33),0)
+                                .splineTo(new Vector2d(-38.1, 36),Mat)
+                                .splineToLinearHeading(new Pose2d(-56.2, 32.5,Math.toRadians(0)),Math.toRadians(-90))
+                                //Intake 1
+                                .splineToConstantHeading(new Vector2d(-46,13),)
+
+//                                .lineTo(new Vector2d(-53.19, 14))
+//                                .splineToConstantHeading(new Vector2d(0, 10),0)
+//                                .splineToConstantHeading(new Vector2d(38, 15),0)
+//                                .splineToConstantHeading(new Vector2d(47, 34),0)
                                 .build()
                 );
 
