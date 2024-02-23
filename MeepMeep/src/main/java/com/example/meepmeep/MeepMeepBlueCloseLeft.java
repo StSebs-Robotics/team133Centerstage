@@ -14,14 +14,10 @@ public class MeepMeepBlueCloseLeft extends MeepMeepBaseClass {
                 drive.trajectorySequenceBuilder(pose2dM(12, 61, angleConvert(90)))
                         .setTangent(270)
                         .splineToConstantHeading(vector2dM(22, 42), angleConvert(270))
+                        //intake up
+                        //slide up
                         .splineToLinearHeading(pose2dM(54, 41, angleConvert(0)), angleConvert(0))
-                        //IDK what this path is but it looks like a really nice far path do don't delete
-//                                .splineToLinearHeading(pose2dM(-32, 35, angleConvert(180)), angleConvert(0))
-//                                .splineToLinearHeading(pose2dM(-41, 24,angleConvert(270)),angleConvert(270))
-//                                .splineToLinearHeading(pose2dM(-24, 12,angleConvert(0)),0)
-//                                .splineToConstantHeading(vector2dM(0, 10),0)
-//                                .splineToConstantHeading(vector2dM(38, 15),0)
-//                               .splineToConstantHeading(vector2dM(47, 40),0)
+                        //drop pixels
                         .build();
         other();
     }

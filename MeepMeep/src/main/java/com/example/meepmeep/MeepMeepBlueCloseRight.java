@@ -13,10 +13,13 @@ public class MeepMeepBlueCloseRight extends MeepMeepBaseClass {
         sequence = drive ->
                 drive.trajectorySequenceBuilder(pose2dM(10.2, 61, angleConvert(90)))
                         .setTangent(angleConvert(270))
-                        .splineTo(vector2dM(10, 45), angleConvert(270))
+                        .splineToConstantHeading(vector2dM(12, 45), angleConvert(270))
                         .splineTo(vector2dM(7, 38), angleConvert(225))
+                        //intake up
+                        //slides up
                         .lineToSplineHeading(pose2dM(20, 30, angleConvert(0)))
                         .splineToConstantHeading(vector2dM(54, 28), angleConvert(0))
+                        //drop pixels
                         .build();
         other();
     }

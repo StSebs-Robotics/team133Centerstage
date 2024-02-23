@@ -303,15 +303,16 @@ public class Auto extends LinearOpMode {
 //                    .lineTo(vector2dM(10.2, 40 ))
 //                    .addTemporalMarker(slideUp)
 //                    .splineToLinearHeading(positions.dropMiddlePos,0)
+
                     .setTangent(angleConvert(270))
-                    .splineToConstantHeading(vector2dM(10.2, 35), angleConvert(270))
+                    .splineTo(vector2dM(10.2, 35), angleConvert(270))
                     .addTemporalMarker(intakeUp)
                     .addTemporalMarker(slideUp)
-                    .lineToSplineHeading(pose2dM(30, 33, angleConvert(0)))
-                    //Liam did I do this right
-                    .splineToConstantHeading(positions.dropMiddlePos.vec(), 0)
+                    .setTangent(0)
+                    .splineToLinearHeading(positions.dropMiddlePos,angleConvert(0))
                     .addTemporalMarker(dropPixels)
                     .waitSeconds(.3);
+
             TrajectorySequenceBuilder unfinishedClose = drive.trajectorySequenceBuilder(intPose)
 //                    .lineTo(vector2dM(10.2, 55 ))
 //                    .lineTo(vector2dM(20, 45 ))
@@ -321,7 +322,7 @@ public class Auto extends LinearOpMode {
 //                    .splineToConstantHeading(positions.dropClosePos.vec(), 0)
 
                     .setTangent(angleConvert(270))
-                    .splineTo(vector2dM(10, 45), angleConvert(270))
+                    .splineToConstantHeading(vector2dM(12, 45), angleConvert(270))
                     .splineTo(vector2dM(7, 38), angleConvert(225))
                     .addTemporalMarker(intakeUp)
                     .addTemporalMarker(slideUp)
@@ -329,6 +330,7 @@ public class Auto extends LinearOpMode {
                     .splineToConstantHeading(positions.dropClosePos.vec(), angleConvert(0))
                     .addTemporalMarker(dropPixels)
                     .waitSeconds(.3);
+
             TrajectorySequenceBuilder unfinishedFar = drive.trajectorySequenceBuilder(intPose)
 //                    .lineTo(vector2dM(10.2, 55 ))
 //                    .lineTo(vector2dM(25, 45 ))
@@ -336,14 +338,14 @@ public class Auto extends LinearOpMode {
 //                    .splineToLinearHeading(pose2dM(32, 30 , angleConvert(0)), angleConvert(180))
 //                    .addTemporalMarker(slideUp)
 //                    .splineToConstantHeading(positions.dropFarPos.vec(), 0)
+
                     .setTangent(270)
                     .splineToConstantHeading(vector2dM(22, 42), angleConvert(270))
                     .addTemporalMarker(intakeUp)
                     .addTemporalMarker(slideUp)
-                    .splineToLinearHeading(positions.dropFarPos, 0)
+                    .splineToLinearHeading(positions.dropFarPos, angleConvert(0))
                     .addTemporalMarker(dropPixels)
                     .waitSeconds(.3);
-
 
             if (morePixels) {
                 if (throughTruss) {

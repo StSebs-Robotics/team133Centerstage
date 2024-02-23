@@ -17,7 +17,7 @@ public class MeepMeepBlueFarMiddle extends MeepMeepBaseClass {
                         .setTangent(angleConvert(180))
                         //intake up
                         .forward(3)
-                        .splineToLinearHeading(pose2dM(-56.2, 32.5, angleConvert(0)), angleConvert(90))
+                        .splineToLinearHeading(pose2dM(-56.2, 32.5, angleConvert(0)), angleConvert(180))
                         //Intake 1
                         .setTangent(angleConvert(270))
                         .splineToConstantHeading(vector2dM(-46, 13), 0)

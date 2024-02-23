@@ -11,20 +11,13 @@ public class MeepMeepBlueFarRight extends MeepMeepBaseClass {
     public static void main(String[] args) {
         other1(true);
         sequence = drive ->
-                //drive.trajectorySequenceBuilder(pose2dM(-38.1,61, angleConvert(90)))
                 drive.trajectorySequenceBuilder(pose2dM(-33, 61, angleConvert(90)))
-                        .setTangent(180)
-                        .splineToLinearHeading(pose2dM(-34,30, angleConvert(180)),angleConvert(0))
-                        //intake up
-                        .setTangent(angleConvert(179))
-                        .splineToLinearHeading(pose2dM(-56.2, 32.5, angleConvert(0)), angleConvert(180))
-                        .splineToConstantHeading(vector2dM(-55,23),angleConvert(0))
-                        //intake one
-
-//                        .splineToLinearHeading(pose2dM(-24, 12, angleConvert(0)), 0)
-//                        .splineToConstantHeading(vector2dM(0, 10), 0)
-//                        .splineToConstantHeading(vector2dM(38, 15), 0)
-//                        .splineToConstantHeading(vector2dM(47, 40), 0)
+                        .lineTo(vector2dM(-38.1, 33))
+                        .splineToConstantHeading(vector2dM(-53.19, 38), 0)
+                        .splineToLinearHeading(pose2dM(-53.19, 20, angleConvert(0)), 0)
+                        .splineToConstantHeading(vector2dM(0, 10), 0)
+                        .splineToConstantHeading(vector2dM(38, 15), 0)
+                        .splineToConstantHeading(vector2dM(47, 34), 0)
                         .build();
         other();
     }

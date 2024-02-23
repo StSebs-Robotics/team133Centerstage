@@ -14,8 +14,11 @@ public class MeepMeepBlueCloseMiddle extends MeepMeepBaseClass {
                 drive.trajectorySequenceBuilder(pose2dM(10.2, 61, angleConvert(90)))
                         .setTangent(angleConvert(270))
                         .splineTo(vector2dM(10.2, 35), angleConvert(270))
-                        .lineToSplineHeading(pose2dM(30, 33, angleConvert(0)))
-                        .splineToConstantHeading(vector2dM(54, 33), 0)
+                        //intake up
+                        //slides up
+                        .setTangent(0)
+                        .splineToLinearHeading(pose2dM(54, 33, angleConvert(0)),angleConvert(0))
+                        //Drop pixels
                         .build();
         other();
     }
