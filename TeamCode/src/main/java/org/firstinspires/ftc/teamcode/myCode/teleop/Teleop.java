@@ -57,6 +57,7 @@ public class Teleop extends LinearOpMode {
     private boolean[] isSlideLocked = {false};
     private int intakePower = 0;
     private double dumpPos = 0;
+    private double intakePos = 5;
     private boolean clawFrontOpen = true;
     private boolean clawBackOpen = true;
 
@@ -157,13 +158,20 @@ public class Teleop extends LinearOpMode {
                     input = new Vector2d(-currentGamepad1.left_stick_x * yMultiplier / 3,
                             currentGamepad1.left_stick_y * yMultiplier / 3)
                             .rotated(-robotOrientation.getYaw(AngleUnit.RADIANS));
+
+                    // Pass in the rotated input + right stick value for rotation
+                    // Rotation is not part of the rotated input thus must be passed in separately
+
+                    drive.setWeightedDrivePower(new Pose2d(input.getX(), input.getY(), -currentGamepad1.right_stick_x/3));
+                } else {
+
+                    // Pass in the rotated input + right stick value for rotation
+                    // Rotation is not part of the rotated input thus must be passed in separately
+
+                    drive.setWeightedDrivePower(new Pose2d(input.getX(), input.getY(), -currentGamepad1.right_stick_x));
                 }
-                // Pass in the rotated input + right stick value for rotation
-                // Rotation is not part of the rotated input thus must be passed in separately
 
-                drive.setWeightedDrivePower(new Pose2d(input.getX(), input.getY(), -currentGamepad1.right_stick_x));
-
-                if (currentGamepad2.options && !previousGamepad2.options) {
+                if (currentGamepad1.options && !previousGamepad1.options) {
                     if (yMultiplier == 1) {
                         yMultiplier = -1;
                     } else {
@@ -181,17 +189,43 @@ public class Teleop extends LinearOpMode {
                 if (currentGamepad1.dpad_right) {
                     // used to be function intake 1
                     intakeRotate.setPosition(Constants.intakePickupStack1);
+                    intakePos = 5;
                 }
                 // Rotates intake up
-                if (currentGamepad1.share) {
+                if (currentGamepad1.right_bumper) {
                     intakeRotate.setPosition(Constants.intakeUp);
+                    intakePos = 5;
                 }
                 // Resets the position {Home Button}
-                if (currentGamepad2.ps && !previousGamepad2.ps) {
+                if (currentGamepad1.ps && !previousGamepad1.ps) {
                     imu.resetYaw();
                     drive.setPoseEstimate(new Pose2d(0, 0, 0));
-                    gamepad1.rumble(200);
+                    gamepad1.rumble(1,1,200);
                     gamepad1.setLedColor(1,1,1,1000);
+                }
+
+                if (currentGamepad1.right_trigger ==1 && previousGamepad1.right_trigger!=1) {
+                    if (intakePos == 0) {
+                        intakePos = 5;
+                    }
+                    if (intakePos == 5) {
+                        intakeRotate.setPosition(Constants.intakePickupStack5);
+
+                    } else if (intakePos == 4) {
+                        intakeRotate.setPosition(Constants.intakePickupStack4);
+
+                    } else if (intakePos == 3) {
+                        intakeRotate.setPosition(Constants.intakePickupStack3);
+
+                    } else if (intakePos == 2) {
+                        intakeRotate.setPosition(Constants.intakePickupStack2);
+
+                    } else if (intakePos == 1) {
+                        intakeRotate.setPosition(Constants.intakePickupStack1);
+
+                    }
+                    intakePos -= 1;
+
                 }
 
                 if (currentGamepad1.triangle) {
@@ -322,15 +356,18 @@ public class Teleop extends LinearOpMode {
 
                 // region Intake Positions
                 if (currentGamepad1.circle) {
+                    intakePos = 5;
                     intakeRotate.setPosition(Constants.intakePickupStack4);
                 }
 
                 if (currentGamepad1.triangle) {
+                    intakePos = 5;
                     intakeRotate.setPosition(Constants.intakePickupStack5);
                 }
 
 
                 if (currentGamepad2.square) {
+                    intakePos = 5;
                     intakeRotate.setPosition(Constants.intakePickupStack1);
                 }
                 // endregion

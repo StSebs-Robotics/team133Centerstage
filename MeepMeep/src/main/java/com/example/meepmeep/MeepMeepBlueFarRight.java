@@ -9,16 +9,22 @@ import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
 public class MeepMeepBlueFarRight extends MeepMeepBaseClass {
     public static void main(String[] args) {
+        isBlue= true;
         sequence = drive ->
                 //drive.trajectorySequenceBuilder(pose2dM(-38.1,61, angleConvert(90)))
-                drive.trajectorySequenceBuilder(pose2dM(-33, -61, angleConvert(-90)))
-                        .lineTo(vector2dM(-38.1, 50))
-                        .splineToLinearHeading(pose2dM(-32, 35, angleConvert(180)), angleConvert(0))
-                        .splineToLinearHeading(pose2dM(-41, 24, angleConvert(270)), angleConvert(270))
-                        .splineToLinearHeading(pose2dM(-24, 12, angleConvert(0)), 0)
-                        .splineToConstantHeading(vector2dM(0, 10), 0)
-                        .splineToConstantHeading(vector2dM(38, 15), 0)
-                        .splineToConstantHeading(vector2dM(47, 40), 0)
+                drive.trajectorySequenceBuilder(pose2dM(-33, 61, angleConvert(90)))
+                        .setTangent(180)
+                        .splineToLinearHeading(pose2dM(-34,30, angleConvert(180)),angleConvert(0))
+                        //intake up
+                        .setTangent(angleConvert(179))
+                        .splineToLinearHeading(pose2dM(-56.2, 32.5, angleConvert(0)), angleConvert(180))
+                        .splineToConstantHeading(pose2dM(-55,23),angleConvert())
+                        //intake one
+
+//                        .splineToLinearHeading(pose2dM(-24, 12, angleConvert(0)), 0)
+//                        .splineToConstantHeading(vector2dM(0, 10), 0)
+//                        .splineToConstantHeading(vector2dM(38, 15), 0)
+//                        .splineToConstantHeading(vector2dM(47, 40), 0)
                         .build();
         other();
     }
