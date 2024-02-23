@@ -9,6 +9,7 @@ import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
 public class ParkMiddle extends MeepMeepBaseClass {
     public static void main(String[] args) {
+        other1(false);
         sequence = drive ->
                 //other start positions : 28, 33, 41
                 drive.trajectorySequenceBuilder(pose2dM(52.5, 41, angleConvert(0)))

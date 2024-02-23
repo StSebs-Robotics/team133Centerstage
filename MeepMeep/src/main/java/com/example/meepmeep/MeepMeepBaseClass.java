@@ -9,9 +9,11 @@ import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
 public class  MeepMeepBaseClass {
     static protected boolean isBlue = true;
+    static Positions positions = new Positions(!isBlue);
     protected static double angleConvert(double angle) {
         return Math.toRadians(angle * (isBlue ? 1 : -1));
     }
+
 
     protected static Vector2d vector2dM(double x, double y) {
         return new Vector2d(x,y * (isBlue ? 1 : -1));
@@ -19,6 +21,12 @@ public class  MeepMeepBaseClass {
     protected static Pose2d pose2dM(double x, double y, double angle) {
         return new Pose2d(x,y * (isBlue ? 1 : -1), angle);
     }
+
+    public static void other1(boolean isBlueL) {
+        isBlue = isBlueL;
+        positions = new Positions(!isBlue);
+    }
+
     public static void other() {
         MeepMeep meepMeep = new MeepMeep(800);
         System.out.println(sequence);

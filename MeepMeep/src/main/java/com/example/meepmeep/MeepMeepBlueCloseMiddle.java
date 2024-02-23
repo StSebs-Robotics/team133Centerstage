@@ -9,6 +9,7 @@ import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
 public class MeepMeepBlueCloseMiddle extends MeepMeepBaseClass {
     public static void main(String[] args) {
+        other1(true);
         sequence = drive ->
                 drive.trajectorySequenceBuilder(pose2dM(10.2, 61, angleConvert(90)))
                         .setTangent(angleConvert(270))

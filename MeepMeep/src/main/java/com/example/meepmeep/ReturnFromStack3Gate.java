@@ -9,6 +9,7 @@ import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
 public class ReturnFromStack3Gate extends MeepMeepBaseClass {
     public static void main(String[] args) {
+        other1(true);
         sequence = drive ->
                 drive.trajectorySequenceBuilder(pose2dM(-58, 34, angleConvert(0)))
                         .setTangent(0)

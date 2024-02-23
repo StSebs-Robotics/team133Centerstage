@@ -9,7 +9,7 @@ import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
 public class MeepMeepBlueFarRight extends MeepMeepBaseClass {
     public static void main(String[] args) {
-        isBlue= true;
+        other1(true);
         sequence = drive ->
                 //drive.trajectorySequenceBuilder(pose2dM(-38.1,61, angleConvert(90)))
                 drive.trajectorySequenceBuilder(pose2dM(-33, 61, angleConvert(90)))
@@ -18,7 +18,7 @@ public class MeepMeepBlueFarRight extends MeepMeepBaseClass {
                         //intake up
                         .setTangent(angleConvert(179))
                         .splineToLinearHeading(pose2dM(-56.2, 32.5, angleConvert(0)), angleConvert(180))
-                        .splineToConstantHeading(pose2dM(-55,23),angleConvert())
+                        .splineToConstantHeading(vector2dM(-55,23),angleConvert(0))
                         //intake one
 
 //                        .splineToLinearHeading(pose2dM(-24, 12, angleConvert(0)), 0)

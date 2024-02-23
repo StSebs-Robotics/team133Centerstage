@@ -9,6 +9,7 @@ import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
 public class MeepMeepBlueCloseLeft extends MeepMeepBaseClass {
     public static void main(String[] args) {
+        other1(true);
         sequence = drive ->
                 drive.trajectorySequenceBuilder(pose2dM(12, 61, angleConvert(90)))
                         .setTangent(270)

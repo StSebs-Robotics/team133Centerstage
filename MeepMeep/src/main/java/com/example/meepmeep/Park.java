@@ -9,6 +9,7 @@ import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
 public class Park extends MeepMeepBaseClass {
     public static void main(String[] args) {
+        other1(true);
         sequence = drive ->
                 //Start Positions: 28, 33, 41
                 drive.trajectorySequenceBuilder(new Pose2d(52.5, 41, 0))

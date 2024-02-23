@@ -1,10 +1,8 @@
-package org.firstinspires.ftc.teamcode.myCode.utilities;
+package com.example.meepmeep;
 
-import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 
-@Config
 public class Positions {
     public Pose2d wallParkPos;
     public Pose2d middleParkPos;

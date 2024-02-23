@@ -9,6 +9,7 @@ import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
 public class GetPixel extends MeepMeepBaseClass {
     public static void main(String[] args) {
+        other1(true);
         sequence = drive ->
                 drive.trajectorySequenceBuilder(pose2dM(40, 25,0))
                         .lineTo( vector2dM(39,23))

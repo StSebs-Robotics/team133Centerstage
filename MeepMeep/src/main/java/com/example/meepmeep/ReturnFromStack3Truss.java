@@ -9,7 +9,7 @@ import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
 public class ReturnFromStack3Truss extends MeepMeepBaseClass {
     public static void main(String[] args) {
-        isBlue = true;
+        other1(false);
         sequence = drive ->
                 drive.trajectorySequenceBuilder(pose2dM(-57, 35, angleConvert(0)))
                         .lineTo(vector2dM(-56, 39))
