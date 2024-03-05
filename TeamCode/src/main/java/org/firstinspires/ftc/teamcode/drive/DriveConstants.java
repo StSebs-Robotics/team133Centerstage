@@ -22,7 +22,7 @@ public class DriveConstants {
      * These are motor constants that should be listed online for your motors.
      */
     public static final double TICKS_PER_REV = 384.5;
-    public static final double MAX_RPM = 435;
+    public static final double MAX_RPM = 420;
 
     /*
      * Set RUN_USING_ENCODER to true to enable built-in hub velocity control using drive encoders.
@@ -46,7 +46,7 @@ public class DriveConstants {
      */
     public static double WHEEL_RADIUS = 1.889; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (motor) speed
-    public static double TRACK_WIDTH = 19.6; // in
+    public static double TRACK_WIDTH = 14.77; // in
 
     /*
      * These are the feedforward parameters used to model the drive motor behavior. If you are using
@@ -54,9 +54,11 @@ public class DriveConstants {
      * motor encoders or have elected not to use them for velocity control, these values should be
      * empirically tuned.
      */
-    public static double kV = 0.012 /*1.0 / rpmToVelocity(MAX_RPM)*/;
-    public static double kA = 0.005;
-    public static double kStatic = 0.01;
+
+    //old values  kV = 0.01336220456166933; kA = 0.003; kStatic = 0;
+    public static double kV = 0.011;//1.0 / rpmToVelocity(MAX_RPM);
+    public static double kA = 0.003;
+    public static double kStatic = 0.09328 ;
 
     /*
      * These values are used to generate the trajectories for you robot. To ensure proper operation,
@@ -66,9 +68,9 @@ public class DriveConstants {
      * inches.
      */
     public static double MAX_VEL = 50;
-    public static double MAX_ACCEL = 45;
-    public static double MAX_ANG_VEL = 4.391919345149559/*Math.toRadians(60)*/;
-    public static double MAX_ANG_ACCEL = 4.391919345149559/*Math.toRadians(60)*/;
+    public static double MAX_ACCEL = 50;
+    public static double MAX_ANG_VEL = 4.391919345149559;//Math.toRadians(60);
+    public static double MAX_ANG_ACCEL = 4.391919345149559;//Math.toRadians(60);
 
     /*
      * Adjust the orientations here to match your robot. See the FTC SDK documentation for details.

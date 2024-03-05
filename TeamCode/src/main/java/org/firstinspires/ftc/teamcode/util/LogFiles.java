@@ -174,7 +174,7 @@ public final class LogFiles {
         public void onOpModePreInit(OpMode opMode) {
             log = new LogFile(opMode.getClass().getCanonicalName());
 
-            // clean up old files
+            // clean up  files
             File[] fs = Objects.requireNonNull(ROOT.listFiles());
             Arrays.sort(fs, (a, b) -> Long.compare(a.lastModified(), b.lastModified()));
             long totalSizeBytes = 0;

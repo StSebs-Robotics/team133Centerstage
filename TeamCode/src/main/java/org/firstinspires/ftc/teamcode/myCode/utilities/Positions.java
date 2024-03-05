@@ -38,16 +38,16 @@ public class Positions {
     public Positions(boolean mirror) {
         isBlue = !mirror;
         double multiplier = mirror ? -1 : 1;
-        double dropX = 54;
-        wallParkPos = pose2dM(60, 62 * multiplier, angleConvert(0));
-        middleParkPos = pose2dM(60,12 * multiplier, angleConvert(0));
+        double dropX = 55.5;
+        wallParkPos = pose2dM(60, 62 , angleConvert(0));
+        middleParkPos = pose2dM(60,5 , angleConvert(0));
 
-        stack1Pos = pose2dM(-56.2,32.5* multiplier, angleConvert(180));
-        stack3Pos = pose2dM(-58.75,17.5* multiplier, angleConvert(180));
+        stack1Pos = pose2dM(-56.2,37, angleConvert(180));
+        stack3Pos = pose2dM(-58,15.5 , angleConvert(180));
 
-        dropClosePos = pose2dM(dropX, 28 * multiplier, angleConvert(0));
-        dropFarPos = pose2dM(dropX, 41 * multiplier, angleConvert(0));
-        dropMiddlePos = pose2dM(dropX, 33 * multiplier, angleConvert(0));
+        dropClosePos = pose2dM(dropX, 28 , angleConvert(0));
+        dropFarPos = pose2dM(dropX, 39.5, angleConvert(0));
+        dropMiddlePos = pose2dM(dropX, 33 , angleConvert(0));
         //these are where we drop the white pixels we might not use this
         dropOtherClosePos = pose2dM(0,0,0);
         dropOtherFarPos = pose2dM(0,0,0);
@@ -58,8 +58,8 @@ public class Positions {
         //these ones don't get flipped
         startRedFarPos = new Pose2d(-38.1, -61, Math.toRadians(-90));
         startRedClosePos = new Pose2d(15.75, -61, Math.toRadians(-90));
-        startBlueFarPos = new Pose2d(-33, 61 * multiplier, Math.toRadians(90));
-        startBlueClosePos = new Pose2d(12, 61 * multiplier, Math.toRadians(90));
+        startBlueFarPos = new Pose2d(-33, 61 , Math.toRadians(90));
+        startBlueClosePos = new Pose2d(12, 61, Math.toRadians(90));
 
     }
 }

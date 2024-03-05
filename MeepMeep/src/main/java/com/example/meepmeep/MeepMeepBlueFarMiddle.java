@@ -25,7 +25,6 @@ public class MeepMeepBlueFarMiddle extends MeepMeepBaseClass {
                         //slide up
                         .splineToConstantHeading(vector2dM(24,13),0)
                         .splineToConstantHeading(vector2dM(54,33),0)
-                        //drop pixels
                         .build();
         other();
     }

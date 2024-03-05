@@ -32,6 +32,7 @@ public class Teleop extends LinearOpMode {
     private CRServo intakeStage2;
     private Servo frontClaw;
     private Servo backClaw;
+    private Servo rotateClaw;
 
     private Servo plane;
     private Servo planeLock;
@@ -91,7 +92,7 @@ public class Teleop extends LinearOpMode {
     public void runOpMode() {
         // region Hardware Initialization
 
-        imu = hardwareMap.get(IMU.class, "imu");
+        imu = hardwareMap.get(IMU.class, "imu2");
         IMU.Parameters myIMUparameters;
 
         myIMUparameters = new IMU.Parameters(new RevHubOrientationOnRobot(
@@ -115,6 +116,7 @@ public class Teleop extends LinearOpMode {
 
         intakeRotate = hardwareMap.servo.get("intakerotate");
         dump = hardwareMap.servo.get("dump");
+        rotateClaw= hardwareMap.servo.get("clawrotate");
 
         backClaw = hardwareMap.servo.get("backclaw");
         frontClaw = hardwareMap.servo.get("frontclaw");
@@ -131,6 +133,7 @@ public class Teleop extends LinearOpMode {
         dump.setPosition(Constants.dumpDown);
         backClaw.setPosition(Constants.backClawOpen);
         frontClaw.setPosition(Constants.frontClawOpen);
+        rotateClaw.setPosition(Constants.clawRotateMiddle);
         clawBackOpen = true;
         clawFrontOpen = true;
         StorePlane();
@@ -153,11 +156,14 @@ public class Teleop extends LinearOpMode {
                 robotOrientation = imu.getRobotYawPitchRollAngles();
                 Vector2d input = new Vector2d(-currentGamepad1.left_stick_x * yMultiplier,
                         currentGamepad1.left_stick_y * yMultiplier)
-                        .rotated(-robotOrientation.getYaw(AngleUnit.RADIANS));
+
+                        .rotated(-poseEstimate.getHeading());
+                //.rotated(-robotOrientation.getYaw(AngleUnit.RADIANS));
                 if (currentGamepad1.left_bumper) {
                     input = new Vector2d(-currentGamepad1.left_stick_x * yMultiplier / 3,
                             currentGamepad1.left_stick_y * yMultiplier / 3)
-                            .rotated(-robotOrientation.getYaw(AngleUnit.RADIANS));
+                            .rotated(-poseEstimate.getHeading());
+                            //.rotated(-robotOrientation.getYaw(AngleUnit.RADIANS));
 
                     // Pass in the rotated input + right stick value for rotation
                     // Rotation is not part of the rotated input thus must be passed in separately
@@ -204,6 +210,15 @@ public class Teleop extends LinearOpMode {
                     gamepad1.setLedColor(1,1,1,1000);
                 }
 
+                if (currentGamepad2.dpad_right && !previousGamepad2.dpad_right) {
+                    if (intakeStage2.getPower() == -1) {
+                        intakeStage2.setPower(0);
+                    } else {
+                        intakeStage2.setPower(-1);
+
+                    }
+                }
+
                 if (currentGamepad1.right_trigger ==1 && previousGamepad1.right_trigger!=1) {
                     if (intakePos == 0) {
                         intakePos = 5;
@@ -232,6 +247,7 @@ public class Teleop extends LinearOpMode {
                     dump.setPosition(dump.getPosition() + .001);
                     dumpPos = dump.getPosition();
                 }
+
 
                 if (currentGamepad1.square) {
                     dump.setPosition(dump.getPosition() - .001);
@@ -278,7 +294,7 @@ public class Teleop extends LinearOpMode {
                                 }, 300L);
                                 isSlideLocked[0] = false;
                             }
-                        }, 200L);
+                        }, 300L);
                     }
                     if (currentGamepad2.left_bumper && !previousGamepad2.left_bumper && slidePosition[0] > 0) {
                         if (clawBackOpen) {
@@ -305,6 +321,7 @@ public class Teleop extends LinearOpMode {
                     // Bring Slides down
                     if (currentGamepad2.cross && !previousGamepad2.cross) {
                         dump.setPosition(Constants.dumpDown);
+                        rotateClaw.setPosition(Constants.clawRotateMiddle);
                         clawFrontOpen = true;
                         clawBackOpen = true;
 
@@ -331,12 +348,45 @@ public class Teleop extends LinearOpMode {
                     moveSlides(slidePosition[0], 1);
                 }
 
+                if (slidePosition[0] > 100) {
+                    if (currentGamepad2.left_stick_button) {
+                        rotateClaw.setPosition(Constants.clawRotateMiddle);
+                    }
+                    if (currentGamepad2.left_stick_x > 0) {
+                        rotateClaw.setPosition(rotateClaw.getPosition() + .02);
+                    }
+                    telemetry.addData("leftstick",currentGamepad2.left_stick_x);
+                    telemetry.addData("servo",rotateClaw.getPosition());
+                    if (currentGamepad2.left_stick_x < 0) {
+                        rotateClaw.setPosition(rotateClaw.getPosition() - .02);
+                    }
+                    if (rotateClaw.getPosition() > Constants.clawRotateRight) {
+                        rotateClaw.setPosition(Constants.clawRotateRight);
+                    }
+                    if (rotateClaw.getPosition() < Constants.clawRotateLeft) {
+                        rotateClaw.setPosition(Constants.clawRotateLeft );
+                    }
+                } else {
+                    rotateClaw.setPosition(Constants.clawRotateMiddle);
+                }
+
                 // Drops Pixels
                 if (currentGamepad2.circle) {
                     clawFrontOpen = true;
                     clawBackOpen = true;
                     backClaw.setPosition(Constants.backClawOpen);
                     frontClaw.setPosition(Constants.frontClawOpen);
+                    if (rotateClaw.getPosition() != .5) {
+                        backClaw.setPosition(Constants.backClawOpenOpen);
+                        frontClaw.setPosition(Constants.frontClawOpenOpen);
+                        new Timer().schedule(new TimerTask() {
+                            @Override
+                            public void run() {
+                                backClaw.setPosition(Constants.backClawOpen);
+                                frontClaw.setPosition(Constants.frontClawOpen);
+                            }
+                        }, 500L);
+                    }
                 }
 
                 // Launches plane
@@ -348,10 +398,13 @@ public class Teleop extends LinearOpMode {
                 }
 
                 // Anti jam
-                if (currentGamepad2.dpad_left) {
-                    intake.setPower(-1);
-                    sleep(50);
-                    intake.setPower(1);
+                if (currentGamepad1.dpad_left && !previousGamepad1.dpad_left) {
+                    if (intakeStage2.getPower() == 0) {
+                        intakeStage2.setPower(-1);
+                    } else {
+                        intakeStage2.setPower(0);
+
+                    }
                 }
 
                 // region Intake Positions
@@ -421,6 +474,7 @@ public class Teleop extends LinearOpMode {
                 telemetry.addData("y", poseEstimate.getY());
                 telemetry.addData("heading", poseEstimate.getHeading());
                 telemetry.addData("slide position", leftSlide.getCurrentPosition());
+                telemetry.addData("heading IMU",robotOrientation.getYaw(AngleUnit.DEGREES));
 
                 telemetry.update();
                 // endregion

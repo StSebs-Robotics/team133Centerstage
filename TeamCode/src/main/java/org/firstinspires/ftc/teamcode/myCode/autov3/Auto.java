@@ -3,6 +3,12 @@ package org.firstinspires.ftc.teamcode.myCode.autov3;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.MarkerCallback;
+import com.acmerobotics.roadrunner.trajectory.constraints.AngularVelocityConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.MinAccelerationConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.MinVelocityConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.TranslationalVelocityConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -22,6 +28,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuild
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -36,6 +43,7 @@ public class Auto extends LinearOpMode {
     private Servo planeRotate;
     private Servo frontClaw;
     private Servo backClaw;
+    private Servo rotateClaw;
     private CRServo intakeStage2;
     // endregion
 
@@ -70,11 +78,6 @@ public class Auto extends LinearOpMode {
 
     // region Trajectories
     private int multiplier = 1;
-    private MarkerCallback intakeUp;
-    private MarkerCallback intake1Pixel;
-    private MarkerCallback intake2Pixel;
-    private MarkerCallback slideUp;
-    private MarkerCallback slideUp2;
     private double angleAdjust = 0;
     private Pose2d intPose;
 
@@ -114,6 +117,7 @@ public class Auto extends LinearOpMode {
         plane = hardwareMap.servo.get("planeTrigger");
         planeRotate = hardwareMap.servo.get("Plane tilt");
         planeLock = hardwareMap.servo.get("claaamp");
+        rotateClaw = hardwareMap.servo.get("clawrotate");
         // endregion
 
         // region Motor Hardware
@@ -231,11 +235,19 @@ public class Auto extends LinearOpMode {
 
     /*creates the trajectories and other stuff for paths*/
     private void setupTrajectories() {
-        intakeUp = () -> {
+
+        TrajectoryVelocityConstraint slowConstraint = new MinVelocityConstraint(Arrays.asList(
+
+                new TranslationalVelocityConstraint(35),
+
+                new AngularVelocityConstraint(4.391919345149559)
+
+        ));
+        MarkerCallback intakeUp = () -> {
             intakeRotate.setPosition(Constants.intakeUp);
         };
 
-        intake1Pixel = () -> {
+        MarkerCallback intake1Pixel = () -> {
             intake.setPower(1);
             intakeStage2.setPower(-1);
             intakeRotate.setPosition(Constants.intakePickupStack5);
@@ -247,32 +259,32 @@ public class Auto extends LinearOpMode {
             }, 1000L);
         };
 
-        intake2Pixel = () -> {
+        MarkerCallback intake2Pixel = () -> {
             intake.setPower(1);
             intakeStage2.setPower(-1);
             intakeRotate.setPosition(Constants.intakePickupStack5);
-            sleep(1000);
-            intakeRotate.setPosition(Constants.intakePickupStack4);
-            sleep(750);
-            intakeRotate.setPosition(Constants.intakeUp);
-            sleep(500);
-        };
-        slideUp = () -> {
-            moveSlides(1100, 1);
-            dump.setPosition(Constants.dumpUp);
-        };
-        slideUp2 = () -> {
-            frontClaw.setPosition(Constants.frontClawClosed);
-            backClaw.setPosition(Constants.backClawClosed);
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    intake.setPower(0);
-                    intakeStage2.setPower(0);
-                    moveSlides(1500, 1);
-                    dump.setPosition(Constants.dumpUp);
+                    intakeRotate.setPosition(Constants.intakePickupStack4);
                 }
-            }, 200L);
+            }, 1000L);
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    intakeRotate.setPosition(Constants.intakeUp);
+                }
+            }, 1750L);
+        };
+        MarkerCallback slideUp = () -> {
+            moveSlides(1100, 1);
+            dump.setPosition(Constants.dumpUp);
+        };
+        MarkerCallback slideUp2 = () -> {
+                intake.setPower(0);
+                intakeStage2.setPower(0);
+                moveSlides(1500, 1);
+                dump.setPosition(Constants.dumpUp);
         };
         MarkerCallback dropPixels = () -> {
             frontClaw.setPosition(Constants.frontClawOpen);
@@ -282,8 +294,17 @@ public class Auto extends LinearOpMode {
             sleep(200);
             moveSlides(0, 1);
         };
+        MarkerCallback drop1Pixel = () -> {
+            frontClaw.setPosition(Constants.frontClawOpen);
+            sleep(100);
+            dump.setPosition(Constants.dumpDown);
+            sleep(200);
+            moveSlides(0, 1);
+        };
         MarkerCallback intakeBack = () -> {
-            intake.setPower(-1);
+            frontClaw.setPosition(Constants.frontClawClosed);
+            backClaw.setPosition(Constants.backClawClosed);
+            //intake.setPower(-1);
         };
         MarkerCallback intakeOff = () -> {
             intake.setPower(0);
@@ -296,10 +317,10 @@ public class Auto extends LinearOpMode {
         TrajectorySequenceBuilder unfinishedFar;
         if (isClose) {
             intPose = isBlue ? positions.startBlueClosePos : positions.startRedClosePos;
-            telemetry.addData("test", intPose);
             telemetry.update();
             multiplier = isBlue ? 1 : -1;
              unfinishedMiddle = drive.trajectorySequenceBuilder(intPose)
+                     .setVelConstraint(slowConstraint)
 //                    .lineTo(vector2dM(10.2, 33.5 ))
 //                    .addTemporalMarker(intakeUp)
 //                    .lineTo(vector2dM(10.2, 40 ))
@@ -317,6 +338,7 @@ public class Auto extends LinearOpMode {
                     .waitSeconds(.3);
 
              unfinishedClose = drive.trajectorySequenceBuilder(intPose)
+                     .setVelConstraint(slowConstraint)
 //                    .lineTo(vector2dM(10.2, 55 ))
 //                    .lineTo(vector2dM(20, 45 ))
 //                    .splineToLinearHeading(pose2dM(10, 30 , angleConvert(0)), angleConvert(180))
@@ -326,15 +348,16 @@ public class Auto extends LinearOpMode {
 
                     .setTangent(angleConvert(270))
                     .splineToConstantHeading(vector2dM(12, 45), angleConvert(270))
-                    .splineTo(vector2dM(7, 38), angleConvert(225))
+                    .splineTo(vector2dM(8, 38), angleConvert(225))
                     .addTemporalMarker(intakeUp)
-                    .addTemporalMarker(slideUp)
+                     .addTemporalMarker(slideUp)
                     .lineToSplineHeading(pose2dM(20, 30, angleConvert(0)))
                     .splineToConstantHeading(positions.dropClosePos.vec(), angleConvert(0))
                     .addTemporalMarker(dropPixels)
                     .waitSeconds(.3);
 
              unfinishedFar = drive.trajectorySequenceBuilder(intPose)
+                     .setVelConstraint(slowConstraint)
 //                    .lineTo(vector2dM(10.2, 55 ))
 //                    .lineTo(vector2dM(25, 45 ))
 //                    .addTemporalMarker(intakeUp)
@@ -343,28 +366,94 @@ public class Auto extends LinearOpMode {
 //                    .splineToConstantHeading(positions.dropFarPos.vec(), 0)
 
                     .setTangent(270)
-                    .splineToConstantHeading(vector2dM(22, 42), angleConvert(270))
+                    .splineToConstantHeading(vector2dM(25, 42), angleConvert(270))
                     .addTemporalMarker(intakeUp)
                     .addTemporalMarker(slideUp)
                     .splineToLinearHeading(positions.dropFarPos, angleConvert(0))
                     .addTemporalMarker(dropPixels)
+                     .turn(0)
                     .waitSeconds(.3);
-
-
-
-
-
-            trajectoryMiddle = unfinishedMiddle.build();
-            trajectoryClose = unfinishedClose.build();
-            trajectoryFar = unfinishedFar.build();
-        } else {
+        } else
+        {
             intPose = isBlue ? positions.startBlueFarPos : positions.startRedFarPos;
-            multiplier = isBlue ? 1 : -1;
-             unfinishedMiddle = drive.trajectorySequenceBuilder(intPose);
+            //JOHNATHON ADD THEM HERE IDIOT
+             unfinishedMiddle = drive.trajectorySequenceBuilder(intPose)
+                     .setVelConstraint(slowConstraint)
+                     .setTangent(angleConvert(270))
+                     .splineTo(vector2dM(-38.1,34  ),angleConvert(270))
+                     .setTangent(angleConvert(180))
+                     //intake up
+                     .addTemporalMarker(intakeUp)
+                     //.waitSeconds(.3)
+                     .forward(3)
+                     .splineToLinearHeading(positions.stack1Pos, angleConvert(180))
+                     //Intake 1
+                     //.addTemporalMarker(intake1Pixel)
+                     .setTangent(angleConvert(270))
+                     .splineToConstantHeading(vector2dM(-46, 13), 0)
+                     .splineToConstantHeading(vector2dM(0,13),0)
+//                     //slide up
+//                     .addTemporalMarker(slideUp)
+                     .splineToConstantHeading(vector2dM(24,13),0)
+                     .splineToConstantHeading(vector2dM(54,33),0)
+//                     //drop 1 pixel
+//                     .addTemporalMarker(drop1Pixel)
+                     .setTangent(angleConvert(90))
+                     .splineToConstantHeading(positions.dropMiddlePos.vec(),angleConvert(90))
+//                     //drop other pixel
+//                     .addTemporalMarker(dropPixels)
+             ;
 
-             unfinishedClose = drive.trajectorySequenceBuilder(intPose);
+             unfinishedClose = drive.trajectorySequenceBuilder(intPose)
+                     .setVelConstraint(slowConstraint)
+//                     .setTangent(angleConvert(270))
+//                     .splineToConstantHeading(vector2dM(-47,42),angleConvert(200))
+//                     //intake up
+//                     .addTemporalMarker(intakeUp)
+//                     .strafeLeft(5)
+//                     .splineToLinearHeading(positions.stack3Pos,angleConvert(250))
+//                     //intake 1
+//                     .addTemporalMarker(intake1Pixel)
+//                     .setTangent(angleConvert(270))
+//                     .splineToConstantHeading(vector2dM(-46, 13), 0)
+//                     .splineToConstantHeading(vector2dM(0,13),0)
+//                     //slide up
+//                     .addTemporalMarker(slideUp)
+//                     .splineToConstantHeading(vector2dM(24,13),0)
+//                     .splineToConstantHeading(vector2dM(54,28),0)
+//                     //drop 1 pixel
+//                      .addTemporalMarker(drop1Pixel)
+//                     .setTangent(angleConvert(90))
+//                     .splineToConstantHeading(vector2dM(54,33),angleConvert(90))
+//                     //drop other pixel
+//                    .addTemporalMarker(dropPixels)
+             ;
 
-             unfinishedFar = drive.trajectorySequenceBuilder(intPose);
+             unfinishedFar = drive.trajectorySequenceBuilder(intPose)
+                     .setVelConstraint(slowConstraint)
+//                     .setTangent(angleConvert(270))
+//                     .splineToLinearHeading(pose2dM(-34,30, angleConvert(180)),angleConvert(0))
+//                     //intake up
+//                     .addTemporalMarker(intakeUp)
+//                     .setTangent(angleConvert(179))
+//                     .splineToLinearHeading(positions.stack1Pos, angleConvert(180))
+//                     //intake one
+//                     .addTemporalMarker(intake1Pixel)
+//                     .setTangent(angleConvert(300))
+//                     //.splineToConstantHeading(vector2dM(-55,23),angleConvert(280))
+//                     .splineToConstantHeading(vector2dM(-16,13),angleConvert(0))
+//                     .splineToConstantHeading(vector2dM(0,13),angleConvert(0))
+//                     //slide up
+//                     .addTemporalMarker(slideUp2)
+//                     .splineToConstantHeading(vector2dM(24,13),0)
+//                     .splineToConstantHeading(positions.dropClosePos.vec(),0)
+//                     //drop 1 pixel
+//                     .addTemporalMarker(drop1Pixel)
+//                     .setTangent(angleConvert(90))
+//                     .splineToConstantHeading(positions.dropFarPos.vec(),angleConvert(90))
+//                     //drop other pixel
+//                     .addTemporalMarker(dropPixels)
+             ;
 
 
 
@@ -382,12 +471,12 @@ public class Auto extends LinearOpMode {
                         .waitSeconds(1.250)
                         .addTemporalMarker(intakeBack)
                         //GO Pack
-                        .lineTo(vector2dM(-56, 39))
-                        .splineToConstantHeading(vector2dM(-51, 48), angleConvert(45))
+                        .forward(3)
+                        .splineToConstantHeading(vector2dM(-52, 48), angleConvert(45))
                         .splineToConstantHeading(vector2dM(-23, 60), angleConvert(0))
                         .splineToConstantHeading(vector2dM(0, 60), angleConvert(0))
-                        .addTemporalMarker(slideUp2)
-                        .addTemporalMarker(intakeOff)
+                       .addTemporalMarker(slideUp2)
+                       .addTemporalMarker(intakeOff)
                         .splineToConstantHeading(positions.dropMiddlePos.vec().plus(vector2dM(0, -2.5)), angleConvert(0))
                         .addTemporalMarker(dropPixels)
                 ;
@@ -403,13 +492,13 @@ public class Auto extends LinearOpMode {
                         .waitSeconds(1.250)
                         .addTemporalMarker(intakeBack)
                         //GO Back
-                        .lineTo(vector2dM(-56, 39))
-                        .splineToConstantHeading(vector2dM(-51, 48), angleConvert(45))
+                        .forward(3)
+                        .splineToConstantHeading(vector2dM(-52, 48), angleConvert(45))
                         .splineToConstantHeading(vector2dM(-23, 60), angleConvert(0))
                         .splineToConstantHeading(vector2dM(0, 60), angleConvert(0))
                         .addTemporalMarker(slideUp2)
                         .addTemporalMarker(intakeOff)
-                        .splineToConstantHeading(positions.dropClosePos.vec().plus(vector2dM(0, 2.5)), angleConvert(0))
+                        .splineToConstantHeading(positions.dropMiddlePos.vec().plus(vector2dM(0, -2.5)), angleConvert(0))
                         .addTemporalMarker(dropPixels)
                 ;
 
@@ -424,30 +513,29 @@ public class Auto extends LinearOpMode {
                         .waitSeconds(1.250)
                         .addTemporalMarker(intakeBack)
                         //GO Back
-                        .lineTo(vector2dM(-56, 39))
-                        .splineToConstantHeading(vector2dM(-51, 48), angleConvert(45))
+                        .forward(3)
+                        .splineToConstantHeading(vector2dM(-52, 48), angleConvert(45))
                         .splineToConstantHeading(vector2dM(-23, 60), angleConvert(0))
                         .splineToConstantHeading(vector2dM(0, 60), angleConvert(0))
                         .addTemporalMarker(slideUp2)
                         .addTemporalMarker(intakeOff)
-                        .splineToConstantHeading(positions.dropFarPos.vec().plus(vector2dM(0, -2.5)), angleConvert(0))
+                        .splineToConstantHeading(positions.dropMiddlePos.vec().plus(vector2dM(0, -2.5)), angleConvert(0))
                         .addTemporalMarker(dropPixels)
                 ;
             } else {
                 unfinishedMiddle = unfinishedMiddle
-                        .lineTo(vector2dM(39, 23))
-                        .splineToConstantHeading(vector2dM(32, 10.6), angleConvert(200))
-                        .splineToConstantHeading(vector2dM(1, 15), angleConvert(180))
-                        .splineToConstantHeading(positions.stack3Pos.vec(), angleConvert(180))
+                        .back(2)
+                        .splineToConstantHeading(vector2dM(26,13), angleConvert(180))
+                        .splineToConstantHeading(positions.stack3Pos.vec(),angleConvert(180))
                         .addTemporalMarker(intake2Pixel)
-                        .waitSeconds(1.250)
+                        .waitSeconds(2)
                         .addTemporalMarker(intakeBack)
                         //Go back
                         .setTangent(0)
                         .splineToConstantHeading(vector2dM(-34, 13), angleConvert(350))
                         .splineToConstantHeading(vector2dM(0, 13), angleConvert(0))
                         .addTemporalMarker(slideUp2)
-                        .splineToConstantHeading(vector2dM(36, 13), angleConvert(0))
+                        .splineToConstantHeading(vector2dM(18, 13), angleConvert(0))
                         .addTemporalMarker(intakeOff)
                         .splineToConstantHeading(positions.dropMiddlePos.vec().plus(vector2dM(0, -2.5)), angleConvert(45))
                         .addTemporalMarker(dropPixels)
@@ -455,44 +543,43 @@ public class Auto extends LinearOpMode {
 
 
                 unfinishedClose = unfinishedClose
-                        .lineTo(vector2dM(39, 23))
-                        .splineToConstantHeading(vector2dM(32, 10.6), angleConvert(200))
-                        .splineToConstantHeading(vector2dM(1, 15), angleConvert(180))
-                        .splineToConstantHeading(positions.stack3Pos.vec(), angleConvert(180))
+                        .back(2)
+                        .splineToConstantHeading(vector2dM(26,13), angleConvert(180))
+                        .splineToConstantHeading(positions.stack3Pos.vec(),angleConvert(180))
                         .addTemporalMarker(intake2Pixel)
-                        .waitSeconds(1.250)
+                        .waitSeconds(2.5)
                         .addTemporalMarker(intakeBack)
                         //Go Back
                         .setTangent(0)
                         .splineToConstantHeading(vector2dM(-34, 13), angleConvert(350))
                         .splineToConstantHeading(vector2dM(0, 13), angleConvert(0))
                         .addTemporalMarker(slideUp2)
-                        .splineToConstantHeading(vector2dM(36, 13), angleConvert(0))
+                        .splineToConstantHeading(vector2dM(18, 13), angleConvert(0))
                         .addTemporalMarker(intakeOff)
                         .splineToConstantHeading(positions.dropClosePos.vec().plus(vector2dM(0, 2.5)), angleConvert(45))
                         .addTemporalMarker(dropPixels)
                 ;
 
                 unfinishedFar = unfinishedFar
-                        .lineTo(vector2dM(39, 23))
-                        .splineToConstantHeading(vector2dM(32, 10.6), angleConvert(200))
-                        .splineToConstantHeading(vector2dM(1, 15), angleConvert(180))
-                        .splineToConstantHeading(positions.stack3Pos.vec(), angleConvert(180))
+                        .back(2)
+                        .splineToConstantHeading(vector2dM(26,13), angleConvert(180))
+                        .splineToConstantHeading(positions.stack3Pos.vec(),angleConvert(180))
                         .addTemporalMarker(intake2Pixel)
-                        .waitSeconds(1.250)
+                        .waitSeconds(2.5)
                         .addTemporalMarker(intakeBack)
                         //Go Back
                         .setTangent(0)
                         .splineToConstantHeading(vector2dM(-34, 13), angleConvert(350))
                         .splineToConstantHeading(vector2dM(0, 13), angleConvert(0))
                         .addTemporalMarker(slideUp2)
-                        .splineToConstantHeading(vector2dM(36, 13), angleConvert(0))
+                        .splineToConstantHeading(vector2dM(18, 13), angleConvert(0))
                         .addTemporalMarker(intakeOff)
                         .splineToConstantHeading(positions.dropFarPos.vec().plus(vector2dM(0, -2.5)), angleConvert(45))
                         .addTemporalMarker(dropPixels)
                 ;
             }
         }
+
         if (parkWall) {
             unfinishedMiddle = unfinishedMiddle
                     .back(2)
@@ -536,7 +623,6 @@ public class Auto extends LinearOpMode {
 
     }
 
-    ;
 
     @Override
     public void runOpMode() {
@@ -603,6 +689,7 @@ public class Auto extends LinearOpMode {
         planeRotate.setPosition(Constants.planeRotateStore);
         frontClaw.setPosition(Constants.frontClawClosed);
         backClaw.setPosition(Constants.backClawClosed);
+        rotateClaw.setPosition(Constants.clawRotateMiddle);
         //endregion
 
         //telemetry to say that initialization is done
@@ -612,7 +699,8 @@ public class Auto extends LinearOpMode {
         waitForStart();
         if (opModeIsActive()) {
             //rotates intake down to grab pixel
-            intakeRotate.setPosition(Constants.intakePickupStack1);
+            intakeRotate.setPosition(Constants.intakePickupStack1 - .01);
+            sleep(500);
 
             //Read team element and wait
             readTeamElement();

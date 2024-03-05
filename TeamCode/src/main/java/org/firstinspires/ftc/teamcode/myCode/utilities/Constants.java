@@ -14,16 +14,22 @@ public class Constants {
     public static double intakePickupStack45 = .66;
     // endregion
     // region Dump
-    public static double dumpUp = .5;
-    public static double dumpDown = .224;
+    public static double dumpUp = .47;
+    public static double dumpDown = .2;
+    //previously .224
     // previously .1789
     // endregion
     // region Claws
-    public static double frontClawOpen = .62;
+    public static double frontClawOpen = .64;
+    public static double frontClawOpenOpen = .4;
     public static double frontClawClosed = .74;
 
-    public static double backClawOpen = .86;
-    public static double backClawClosed = .75;
+    public static double backClawOpen = .66;
+    public static double backClawOpenOpen = .9;
+    public static double backClawClosed = .55;
+    public static double clawRotateMiddle = .5;
+    public static double clawRotateLeft = .1;
+    public static double clawRotateRight = .9;
     // endregion
     // region Slides
 
@@ -31,7 +37,7 @@ public class Constants {
     // endregion
     //LaunchPlane
     public static double triggerLaunch = 0;
-    public static double planeRotateLaunch = .35;
+    public static double planeRotateLaunch = .2;
     public static double planeLockLaunch = .2;
     //StorePlane
     public static double triggerStore = 0.4;

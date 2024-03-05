@@ -9,11 +9,11 @@ import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
 public class ReturnFromStack3Truss extends MeepMeepBaseClass {
     public static void main(String[] args) {
-        other1(false);
+        other1(true);
         sequence = drive ->
                 drive.trajectorySequenceBuilder(pose2dM(-57, 35, angleConvert(0)))
-                        .lineTo(vector2dM(-56, 39))
-                        .splineToConstantHeading(vector2dM(-51, 48), angleConvert(45))
+                        .forward(3)
+                        .splineToConstantHeading(vector2dM(-52, 48), angleConvert(45))
                         .splineToConstantHeading(vector2dM(-23, 60), angleConvert(0))
                         .splineToConstantHeading(vector2dM(0, 60), angleConvert(0))
                         .splineToConstantHeading(vector2dM(40, 47), angleConvert(0))
