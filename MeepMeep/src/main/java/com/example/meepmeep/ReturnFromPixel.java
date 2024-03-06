@@ -9,7 +9,7 @@ import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 public class ReturnFromPixel extends MeepMeepBaseClass {
     public static void main(String[] args) {
         other1(true, false);
-        sequence = action.actionBuilder()
+        sequence = action.actionBuilder(new Pose2d(0,0,0))
                 .setTangent(0)
                 .splineToConstantHeading(vector2dM(-34, 13), angleConvert(350))
                 .splineToConstantHeading(vector2dM(0, 13), angleConvert(0))

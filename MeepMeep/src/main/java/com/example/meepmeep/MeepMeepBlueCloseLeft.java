@@ -9,7 +9,7 @@ import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 public class MeepMeepBlueCloseLeft extends MeepMeepBaseClass {
     public static void main(String[] args) {
         other1(true,false);
-        sequence = action.actionBuilder()
+        sequence = action.actionBuilder(new Pose2d(0,0,0))
                         .setTangent(270)
                         .splineToConstantHeading(vector2dM(22, 42), angleConvert(270))
                         //intake up

@@ -10,7 +10,7 @@ import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 public class GetPixelUnderTruss extends MeepMeepBaseClass {
     public static void main(String[] args) {
         other1(true,false);
-        sequence = action.actionBuilder()
+        sequence = action.actionBuilder(new Pose2d(0,0,0))
                 //.back(2)
                 .splineToConstantHeading(vector2dM(30, 52), angleConvert(110))
                 .splineToConstantHeading(vector2dM(0, 62), angleConvert(180))

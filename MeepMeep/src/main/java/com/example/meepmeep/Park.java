@@ -9,7 +9,7 @@ import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 public class Park extends MeepMeepBaseClass {
     public static void main(String[] args) {
         other1(true, false);
-        sequence = action.actionBuilder()
+        sequence = action.actionBuilder(new Pose2d(0,0,0))
                 //.back(2)
                 .strafeTo(vector2dM(50.5, 53))
                 .splineToConstantHeading(vector2dM(60, 56), angleConvert(0))

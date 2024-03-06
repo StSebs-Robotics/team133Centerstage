@@ -9,7 +9,7 @@ import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 public class ParkMiddle extends MeepMeepBaseClass {
     public static void main(String[] args) {
         other1(false, false);
-        sequence = action.actionBuilder()
+        sequence = action.actionBuilder(new Pose2d(0,0,0))
                 //.back(2)
                 .strafeTo(vector2dM(51, 16))
                 //Have the option to use lines or splines (I think Lines are faster)
