@@ -569,37 +569,34 @@ public class Auto extends LinearOpMode {
 
         if (parkWall) {
             unfinishedMiddle = unfinishedMiddle
-                    //.back(2)
-                    .splineTo(vector2dM(50.5, 53), 0)
+                    .lineToX(48)
+                    .setTangent(angleConvert(90))
+                    .splineToConstantHeading(vector2dM(48, 53),angleConvert(90))
                     .splineToConstantHeading(positions.wallParkPos.position, angleConvert(0));
             unfinishedClose = unfinishedClose
-                    //.back(2)
-                    .splineTo(vector2dM(50.5, 53), 0)
+                    .lineToX(48)
+                    .setTangent(angleConvert(90))
+                    .splineToConstantHeading(vector2dM(48, 53),angleConvert(90))
                     .splineToConstantHeading(positions.wallParkPos.position, angleConvert(0));
             unfinishedFar = unfinishedFar
-                    //.back(2)
-                    .splineTo(vector2dM(50.5, 53), 0)
+                    .lineToX(48)
+                    .setTangent(angleConvert(90))
+                    .splineToConstantHeading(vector2dM(48, 53),angleConvert(90))
                     .splineToConstantHeading(positions.wallParkPos.position, angleConvert(0));
         } else {
             unfinishedMiddle = unfinishedMiddle
-                    //.back(2)
-                    .splineTo(vector2dM(51, 16), 0)
-                    //Have the option to use lines or splines (I think Lines are faster)
-                    //.splineToConstantHeading(vector2dM(45.5,18 ),angleConvert(300))
-                    .splineToConstantHeading(positions.middleParkPos.position, angleConvert(350));
+                    .lineToX(48)
+                    .splineToConstantHeading(vector2dM(48,16), angleConvert(0))
+                    .splineToConstantHeading(positions.middleParkPos.position, angleConvert(0));
 
             unfinishedClose = unfinishedClose
-                    //.back(2)
-                    .splineTo(vector2dM(51, 16), 0)
-                    //Have the option to use lines or splines (I think Lines are faster)
-                    //.splineToConstantHeading(vector2dM(45.5,18 ),angleConvert(300))
-                    .splineToConstantHeading(positions.middleParkPos.position, angleConvert(350));
+                    .lineToX(48)
+                    .splineToConstantHeading(vector2dM(48,16), angleConvert(0))
+                    .splineToConstantHeading(positions.middleParkPos.position, angleConvert(0));
             unfinishedFar = unfinishedFar
-                    //.back(2)
-                    .splineTo(vector2dM(51, 16), 0)
-                    //Have the option to use lines or splines (I think Lines are faster)
-                    //.splineToConstantHeading(vector2dM(45.5,18 ),angleConvert(300))
-                    .splineToConstantHeading(positions.middleParkPos.position, angleConvert(350));
+                    .lineToX(48)
+                    .splineToConstantHeading(vector2dM(48,16), angleConvert(0))
+                    .splineToConstantHeading(positions.middleParkPos.position, angleConvert(0));
 
         }
 

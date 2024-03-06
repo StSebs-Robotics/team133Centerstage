@@ -8,13 +8,11 @@ import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
 public class ParkMiddle extends MeepMeepBaseClass {
     public static void main(String[] args) {
-        other1(false, false);
-        sequence = action.actionBuilder(new Pose2d(0,0,0))
-                //.back(2)
-                .strafeTo(vector2dM(51, 16))
-                //Have the option to use lines or splines (I think Lines are faster)
-                //.splineToConstantHeading(vector2dM(45.5,18 * multiplier),angleConvert(300))
-                .splineToConstantHeading(vector2dM(65, 12), angleConvert(350))
+        other1(true, false);
+        sequence = action.actionBuilder(pose2dM(52.25,33,angleConvert(0)))
+                .lineToX(48)
+                .splineToConstantHeading(vector2dM(48,16), angleConvert(0))
+                .splineToConstantHeading(vector2dM(58, 16), angleConvert(0))
                 .build();
         other();
     }
