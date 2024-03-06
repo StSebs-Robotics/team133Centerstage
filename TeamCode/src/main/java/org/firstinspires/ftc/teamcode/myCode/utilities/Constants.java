@@ -33,7 +33,9 @@ public class Constants {
     // endregion
     // region Slides
 
-    public static int slideMax = 10000;
+    public static int slideMax = 3160;
+    public static int slideUp = 1800;
+    public static int slideUpHang = 2467;
     // endregion
     //LaunchPlane
     public static double triggerLaunch = 0;

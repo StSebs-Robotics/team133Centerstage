@@ -20,7 +20,7 @@ import org.firstinspires.ftc.teamcode.myCode.utilities.Constants;
 import java.util.Timer;
 import java.util.TimerTask;
 
-@TeleOp(name = "Teleop2.0", group = "2023-2024")
+@TeleOp(name = "Teleop2.0", group = "A 2023-2024")
 public class Teleop extends LinearOpMode {
     // region Hardware Variables
     private Servo intakeRotate;
@@ -260,10 +260,6 @@ public class Teleop extends LinearOpMode {
                 if (!isSlideLocked[0]) {
                     // Move Slide Up
                     if (currentGamepad2.right_trigger > 0) {
-                        clawFrontOpen = false;
-                        clawBackOpen = false;
-                        backClaw.setPosition(Constants.backClawClosed);
-                        frontClaw.setPosition(Constants.frontClawClosed);
                         slidePosition[0] += 20 * currentGamepad2.right_trigger;
                     }
 
@@ -283,7 +279,7 @@ public class Teleop extends LinearOpMode {
                         new Timer().schedule(new TimerTask() {
                             @Override
                             public void run() {
-                                slidePosition[0] = 1800;
+                                slidePosition[0] = Constants.slideUp;
                                 new Timer().schedule(new TimerTask() {
                                     @Override
                                     public void run() {
@@ -294,6 +290,31 @@ public class Teleop extends LinearOpMode {
                             }
                         }, 300L);
                     }
+
+                    // Slides Up to hang height
+                    if (currentGamepad2.ps && !previousGamepad2.ps) {
+
+                        backClaw.setPosition(Constants.backClawClosed);
+                        frontClaw.setPosition(Constants.frontClawClosed);
+                        isSlideLocked[0] = true;
+                        intakePower = 0;
+                        // Does an asynchronous wait
+                        new Timer().schedule(new TimerTask() {
+                            @Override
+                            public void run() {
+                                slidePosition[0] = Constants.slideUpHang;
+                                new Timer().schedule(new TimerTask() {
+                                    @Override
+                                    public void run() {
+                                        dump.setPosition(Constants.dumpUp);
+                                    }
+                                }, 300L);
+                                isSlideLocked[0] = false;
+                            }
+                        }, 300L);
+                    }
+
+
                     if (currentGamepad2.left_bumper && !previousGamepad2.left_bumper && slidePosition[0] > 0) {
                         if (clawBackOpen) {
                             backClaw.setPosition(Constants.backClawClosed);
@@ -470,7 +491,7 @@ public class Teleop extends LinearOpMode {
                 telemetry.addData("dump", dump.getPosition());
                 telemetry.addData("x", poseEstimate.position.x);
                 telemetry.addData("y", poseEstimate.position.y);
-                telemetry.addData("heading", poseEstimate.heading);
+                telemetry.addData("heading", poseEstimate.heading.toDouble());
                 telemetry.addData("slide position", leftSlide.getCurrentPosition());
                 telemetry.addData("heading IMU",robotOrientation.getYaw(AngleUnit.DEGREES));
 
