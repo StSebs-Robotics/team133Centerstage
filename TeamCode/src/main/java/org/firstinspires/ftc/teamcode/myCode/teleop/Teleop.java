@@ -1,7 +1,8 @@
 package org.firstinspires.ftc.teamcode.myCode.teleop;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.PoseVelocity2d;
+import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -13,7 +14,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.myCode.utilities.Constants;
 
 import java.util.Timer;
@@ -23,7 +24,7 @@ import java.util.TimerTask;
 public class Teleop extends LinearOpMode {
     // region Hardware Variables
     private Servo intakeRotate;
-    protected SampleMecanumDrive drive;
+    protected MecanumDrive drive;
 
     private double yMultiplier = 1;
     private Servo dump;
@@ -62,7 +63,7 @@ public class Teleop extends LinearOpMode {
     private boolean clawFrontOpen = true;
     private boolean clawBackOpen = true;
 
-    private void moveSlides(int distance, double velocity) {
+        private void moveSlides(int distance, double velocity) {
         leftSlide.setTargetPosition(-distance);
         rightsSlide.setTargetPosition(distance);
 
@@ -106,8 +107,7 @@ public class Teleop extends LinearOpMode {
         backRight = hardwareMap.get(DcMotor.class, "backright");
         frontLeft = hardwareMap.get(DcMotor.class, "frontleft");
         frontRight = hardwareMap.get(DcMotor.class, "frontright");
-        drive = new SampleMecanumDrive(hardwareMap);
-        drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        drive = new MecanumDrive(hardwareMap, new Pose2d(0,0,0));
 
         rightsSlide = hardwareMap.get(DcMotor.class, "rightslide");
         leftSlide = hardwareMap.get(DcMotor.class, "leftslide");
@@ -148,33 +148,31 @@ public class Teleop extends LinearOpMode {
                 currentGamepad2.copy(gamepad2);
 
                 // region Movement Controls
-                Pose2d poseEstimate = drive.getPoseEstimate();
+                Pose2d poseEstimate = drive.pose;
 
                 // Create a vector from the gamepad x/y inputs
                 // Then, rotate that vector by the inverse of that heading
                 YawPitchRollAngles robotOrientation;
                 robotOrientation = imu.getRobotYawPitchRollAngles();
-                Vector2d input = new Vector2d(-currentGamepad1.left_stick_x * yMultiplier,
-                        currentGamepad1.left_stick_y * yMultiplier)
-
-                        .rotated(-poseEstimate.getHeading());
+                double x = -currentGamepad1.left_stick_x * yMultiplier;
+                double y = currentGamepad1.left_stick_y * yMultiplier;
+                double cos = Math.cos(-drive.pose.heading.toDouble());
+                double sin = Math.sin(-drive.pose.heading.toDouble());
+                Vector2d input = new Vector2d( x*cos- y*sin,x*sin + y*cos
+                        );
                 //.rotated(-robotOrientation.getYaw(AngleUnit.RADIANS));
                 if (currentGamepad1.left_bumper) {
-                    input = new Vector2d(-currentGamepad1.left_stick_x * yMultiplier / 3,
-                            currentGamepad1.left_stick_y * yMultiplier / 3)
-                            .rotated(-poseEstimate.getHeading());
-                            //.rotated(-robotOrientation.getYaw(AngleUnit.RADIANS));
 
                     // Pass in the rotated input + right stick value for rotation
                     // Rotation is not part of the rotated input thus must be passed in separately
 
-                    drive.setWeightedDrivePower(new Pose2d(input.getX(), input.getY(), -currentGamepad1.right_stick_x/3));
+                    drive.setDrivePowers(new PoseVelocity2d(input.div(3), -currentGamepad1.right_stick_x/3));
                 } else {
 
                     // Pass in the rotated input + right stick value for rotation
                     // Rotation is not part of the rotated input thus must be passed in separately
 
-                    drive.setWeightedDrivePower(new Pose2d(input.getX(), input.getY(), -currentGamepad1.right_stick_x));
+                    drive.setDrivePowers(new PoseVelocity2d(input, -currentGamepad1.right_stick_x));
                 }
 
                 if (currentGamepad1.options && !previousGamepad1.options) {
@@ -186,7 +184,7 @@ public class Teleop extends LinearOpMode {
                 }
 
                 // Update everything. Odometry. Etc.
-                drive.update();
+                drive.updatePoseEstimate();
                 // endregion
 
                 // region CurrentGamepad1
@@ -205,7 +203,7 @@ public class Teleop extends LinearOpMode {
                 // Resets the position {Home Button}
                 if (currentGamepad1.ps && !previousGamepad1.ps) {
                     imu.resetYaw();
-                    drive.setPoseEstimate(new Pose2d(0, 0, 0));
+                    drive.pose = new Pose2d(0, 0, 0);
                     gamepad1.rumble(1,1,200);
                     gamepad1.setLedColor(1,1,1,1000);
                 }
@@ -470,9 +468,9 @@ public class Teleop extends LinearOpMode {
 
                 // region Telemetry
                 telemetry.addData("dump", dump.getPosition());
-                telemetry.addData("x", poseEstimate.getX());
-                telemetry.addData("y", poseEstimate.getY());
-                telemetry.addData("heading", poseEstimate.getHeading());
+                telemetry.addData("x", poseEstimate.position.x);
+                telemetry.addData("y", poseEstimate.position.y);
+                telemetry.addData("heading", poseEstimate.heading);
                 telemetry.addData("slide position", leftSlide.getCurrentPosition());
                 telemetry.addData("heading IMU",robotOrientation.getYaw(AngleUnit.DEGREES));
 

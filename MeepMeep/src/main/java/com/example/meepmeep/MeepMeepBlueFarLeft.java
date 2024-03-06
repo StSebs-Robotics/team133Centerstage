@@ -1,17 +1,15 @@
 package com.example.meepmeep;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.Vector2d;
 import com.noahbres.meepmeep.MeepMeep;
-import com.noahbres.meepmeep.roadrunner.AddTrajectorySequenceCallback;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
 public class MeepMeepBlueFarLeft extends MeepMeepBaseClass {
     public static void main(String[] args) {
-        other1(true);
-        sequence = drive ->
-                drive.trajectorySequenceBuilder(pose2dM(-38.1, 61, angleConvert(90)))
+        other1(true,false);
+        sequence = action.actionBuilder()
 
                         .setTangent(angleConvert(270))
                         .splineToLinearHeading(pose2dM(-34,30, angleConvert(180)),angleConvert(0))
