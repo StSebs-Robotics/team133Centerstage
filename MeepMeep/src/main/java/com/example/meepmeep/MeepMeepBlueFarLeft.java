@@ -9,13 +9,14 @@ import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 public class MeepMeepBlueFarLeft extends MeepMeepBaseClass {
     public static void main(String[] args) {
         other1(true,false);
-        sequence = action.actionBuilder(new Pose2d(0,0,0))
+        sequence = action.actionBuilder(new Pose2d(-38.1,61,angleConvert(90)))
 
                         .setTangent(angleConvert(270))
                         .splineToLinearHeading(pose2dM(-34,30, angleConvert(180)),angleConvert(0))
                         //intake up
+
                         .setTangent(angleConvert(179))
-                        .splineToLinearHeading(pose2dM(-56.2, 32.5, angleConvert(0)), angleConvert(180))
+                                .splineToLinearHeading(pose2dM(-56.2, 32.5, angleConvert(0)), angleConvert(180))
 
                         //intake one
                         .setTangent(angleConvert(300))

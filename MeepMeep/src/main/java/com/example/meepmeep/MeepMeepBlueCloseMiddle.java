@@ -9,10 +9,10 @@ import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 public class MeepMeepBlueCloseMiddle extends MeepMeepBaseClass {
     public static void main(String[] args) {
         other1(true,false);
-        sequence = action.actionBuilder(new Pose2d(0,0,0))
+        sequence = action.actionBuilder(pose2dM(12,61, angleConvert(90)))
                         .setTangent(angleConvert(270))
-                        //.back(26)
-                        // .splineTo(vector2dM(10.2, 35), angleConvert(270))
+                        .lineToX(35)
+                         .splineTo(vector2dM(10.2, 35), angleConvert(270))
                         //intake up
                         //slides up
                         .setTangent(0)
@@ -22,3 +22,4 @@ public class MeepMeepBlueCloseMiddle extends MeepMeepBaseClass {
         other();
     }
 }
+
